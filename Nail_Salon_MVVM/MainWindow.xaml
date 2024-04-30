@@ -1,0 +1,100 @@
+﻿<Window x:Class="Nail_Salon_MVVM.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Nail_Salon_MVVM"
+        mc:Ignorable="d"
+        Title="Nail Salon" Height="450" Width="800">
+    <Window.Resources>
+
+        <!-- Стили для календаря -->
+        <Style x:Key="PinkDatePickerStyle" TargetType="DatePicker">
+            <Setter Property="Background" Value="#FFD6A4A7" />
+            <!-- Нежно-розовый цвет фона -->
+            <Setter Property="Foreground" Value="Black" />
+            <!-- Белый цвет текста -->
+            <Setter Property="Padding" Value="5" />
+            <!-- Отступы вокруг текста календаря -->
+            <Setter Property="Margin" Value="10" />
+            <!-- Отступы календаря от краев окна -->
+            <Setter Property="BorderThickness" Value="0" />
+            <!-- Убираем границы -->
+        </Style>
+
+        <!-- Стили для таблицы -->
+        <Style x:Key="PinkDataGridStyle" TargetType="DataGrid">
+            <Setter Property="Background" Value="#FFD6A4A7" />
+            <!-- Нежно-розовый цвет фона -->
+            <Setter Property="Foreground" Value="Black" />
+            <!-- Черный цвет текста -->
+            <Setter Property="Padding" Value="5" />
+            <!-- Отступы вокруг содержимого ячеек -->
+            <Setter Property="Margin" Value="10" />
+            <!-- Отступы между таблицей и другими элементами -->
+            <Setter Property="BorderThickness" Value="0" />
+            <!-- Убираем границы -->
+        </Style>
+    </Window.Resources>
+
+    <Window.Background>
+        <SolidColorBrush Color="#FFE7CCCE" />
+        <!-- Устанавливаем нежно-розовый цвет фона -->
+    </Window.Background>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="188*"/>
+            <ColumnDefinition Width="307*"/>
+            <ColumnDefinition Width="305*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Добавляем строку для календаря -->
+            <RowDefinition Height="*"/>
+            <!-- Оставляем место для контента -->
+        </Grid.RowDefinitions>
+
+        <!-- Календарь -->
+        <DatePicker SelectedDate="{Binding SelectedDate, Mode=TwoWay}" SelectedDateChanged="ScheduleDatePicker_SelectedDateChanged" Margin="10,10,10,10" Style="{StaticResource PinkDatePickerStyle}" RenderTransformOrigin="0.5,0.5" />
+
+
+        <!-- Контент -->
+        <TabControl Grid.Row="1" TabStripPlacement="Left" Margin="0,10,0,0" Grid.ColumnSpan="3">
+            <TabItem Header="Расписание" >
+                <DataGrid ItemsSource="{Binding ScheduleItems}" AutoGenerateColumns="False" Style="{StaticResource PinkDataGridStyle}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Клиент" Binding="{Binding CustomerName}" />
+                        <DataGridTextColumn Header="Услуга" Binding="{Binding ServiceName}" />
+                        <DataGridTextColumn Header="Дата / Время" Binding="{Binding StartDataTime}" />
+                        <DataGridTextColumn Header="Мастер" Binding="{Binding EmployeeName}" />
+                        <DataGridTextColumn Header="Стоимость" Binding="{Binding Price}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+
+
+            <TabItem Header="Сотрудники">
+                <Grid Background="#FFFDF6F7"/>
+                <!-- Устанавливаем нежно-розовый цвет для фона -->
+            </TabItem>
+
+            <TabItem Header="Финансы">
+                <Grid Background="#FFFDF6F7"/>
+            </TabItem>
+        </TabControl>
+        <Grid>
+            <Grid.ColumnDefinitions>
+
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+
+                <RowDefinition Height="37*"/>
+                <RowDefinition Height="180*"/>
+
+            </Grid.RowDefinitions>
+
+
+        </Grid>
+    </Grid>
+</Window>
