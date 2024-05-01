@@ -7,7 +7,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Business_Logic;
 
 namespace Nail_Salon_MVVM
 {
@@ -51,8 +50,9 @@ namespace Nail_Salon_MVVM
             }
         }
 
-        public void LoadDataForSelectedDate()
+        public void LoadDataForSelectedDate(DateTime SelectedDate)
         {
+            Console.WriteLine("Loading schedule items for date: " + SelectedDate.ToString()); // Отладочное сообщение
             ScheduleItems.Clear();
             LoadScheduleItems(SelectedDate);
         }
@@ -82,3 +82,4 @@ namespace Nail_Salon_MVVM
         }
     }
 }
+

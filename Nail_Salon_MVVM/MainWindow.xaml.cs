@@ -13,6 +13,27 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+//namespace Nail_Salon_MVVM
+//{
+//    public partial class MainWindow : Window
+//    {
+//        public MainWindow()
+//        {
+//            InitializeComponent();
+//            DataContext = new MainViewModel();
+//        }
+
+//        private void ScheduleDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+//        {
+//            if (DataContext is MainViewModel viewModel)
+//            {
+//                viewModel.ScheduleViewModel.LoadDataForSelectedDate();
+//                //viewModel.LoadDataForSelectedDate();
+//            }
+//        }
+//    }
+//}
+
 namespace Nail_Salon_MVVM
 {
     public partial class MainWindow : Window
@@ -20,16 +41,20 @@ namespace Nail_Salon_MVVM
         public MainWindow()
         {
             InitializeComponent();
-            ScheduleItemViewModel viewModel = new ScheduleItemViewModel();
+            //ScheduleItemViewModel viewModel = new ScheduleItemViewModel();
+            MainViewModel viewModel = new MainViewModel();
             DataContext = viewModel;
         }
 
         private void ScheduleDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (DataContext is ScheduleItemViewModel viewModel)
+            if (DataContext is MainViewModel viewModel)
             {
-                viewModel.LoadDataForSelectedDate();
+                DateTime selectedDate = (DateTime)ScheduleDatePicker.SelectedDate;
+                viewModel.SelectedDate = selectedDate; // Установка выбранной даты во ViewModel
+                viewModel.ScheduleViewModel.LoadDataForSelectedDate(selectedDate);
             }
         }
     }
 }
+
