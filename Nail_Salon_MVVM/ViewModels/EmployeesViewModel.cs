@@ -1,21 +1,26 @@
 ﻿using Business_Logic;
 using DataAccess;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Nail_Salon_MVVM
 {
-
     public class EmployeesViewModel : INotifyPropertyChanged
     {
+        private readonly EmployeesReader _employeesReader;
+        private readonly EmployeeReaderDbContext _dbContext;
 
-        public EmployeesViewModel()
+        public EmployeesViewModel(string connectionString)
         {
+            var optionsBuilder = new DbContextOptionsBuilder<EmployeeReaderDbContext>();
+            optionsBuilder.UseSqlServer(connectionString);
+            var dbContextOptions = optionsBuilder.Options;
+
+            _dbContext = new EmployeeReaderDbContext(dbContextOptions); 
+            _employeesReader = new EmployeesReader(dbContextOptions); 
             EmployeesItems = new ObservableCollection<Employee>();
             LoadScheduleItems();
         }
@@ -37,26 +42,28 @@ namespace Nail_Salon_MVVM
 
         public void LoadDataForSelectedDate()
         {
-            EmployeesItems.Clear();
             LoadScheduleItems();
         }
 
         private void LoadScheduleItems()
         {
-            EmployeesReader reader = new EmployeesReader("Data Source=MSI;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False");
-            List<Employee> listEmployeesItems = reader.GetAllEmployeesAndCountScore();
-
-            EmployeesItems.Clear();
-
-            foreach (Employee item in listEmployeesItems)
+            try
             {
-                EmployeesItems.Add(item);
+                List<Employee> listEmployeesItems = _employeesReader.GetAllEmployeesAndCountScore();
+
+                EmployeesItems.Clear();
+                foreach (Employee item in listEmployeesItems)
+                {
+                    EmployeesItems.Add(item);
+                }
+
+                OnPropertyChanged(nameof(EmployeesItems));
             }
-
-            OnPropertyChanged(nameof(EmployeesItems)); // Уведомление интерфейса об изменении коллекции
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
-
-
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -65,5 +72,4 @@ namespace Nail_Salon_MVVM
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
-
 }

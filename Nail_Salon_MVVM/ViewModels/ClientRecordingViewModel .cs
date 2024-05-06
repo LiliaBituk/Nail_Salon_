@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Business_Logic;
 using DataAccess;
+using Microsoft.EntityFrameworkCore;
 
 namespace Nail_Salon_MVVM
 {
@@ -36,16 +37,27 @@ namespace Nail_Salon_MVVM
             }
         }
 
-        //private Employee _selectedEmployeeId;
-        //public Employee SelectedEmployeeId
-        //{
-        //    get { return _selectedEmployeeId; }
-        //    set
-        //    {
-        //        _selectedEmployeeId = value;
-        //        OnPropertyChanged(nameof(SelectedEmployeeId));
-        //    }
-        //}
+        private DateOnly _selectedDate;
+        public DateOnly SelectedDate
+        {
+            get { return _selectedDate; }
+            set
+            {
+                _selectedDate = value;
+                OnPropertyChanged(nameof(SelectedDate));
+            }
+        }
+
+        private TimeSpan _selectedTime;
+        public TimeSpan SelectedTime
+        {
+            get { return _selectedTime; }
+            set
+            {
+                _selectedTime = value;
+                OnPropertyChanged(nameof(SelectedTime));
+            }
+        }
 
         private string _fullName;
         public string fullName
@@ -80,9 +92,19 @@ namespace Nail_Salon_MVVM
             }
         }
 
-        public ClientRecordingViewModel()
+        private readonly string connectionString;
+
+        public ClientRecordingViewModel(string connectionString)
         {
-            ServiceReader reader = new ServiceReader("Data Source=MSI;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False");
+            this.connectionString = connectionString;
+
+            var EmployeeReaderOptionsBuilder = new DbContextOptionsBuilder<EmployeeReaderDbContext>();
+            EmployeeReaderOptionsBuilder.UseSqlServer(this.connectionString);
+
+            var ServiceReaderOptionsBuilder = new DbContextOptionsBuilder<ServiceReaderDbContext>();
+            ServiceReaderOptionsBuilder.UseSqlServer(this.connectionString);
+
+            ServiceReader reader = new ServiceReader(ServiceReaderOptionsBuilder.Options);
             AvailableServices = new ObservableCollection<Service>(reader.GetAllServices());
             AvailableEmployees = new ObservableCollection<Employee>();
         }
@@ -93,7 +115,10 @@ namespace Nail_Salon_MVVM
 
             if (serviceType != null)
             {
-                EmployeesReader employeesReader = new EmployeesReader("Data Source=MSI;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False");
+                var optionsBuilder = new DbContextOptionsBuilder<EmployeeReaderDbContext>();
+                optionsBuilder.UseSqlServer(connectionString);
+
+                var employeesReader = new EmployeesReader(optionsBuilder.Options);
                 List<Employee> employees = employeesReader.GetEmployeesByServiceType(serviceType);
 
                 foreach (Employee employee in employees)

@@ -1,139 +1,79 @@
 ﻿using Business_Logic;
-using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess
 {
     public class EmployeesReader
     {
+        private readonly EmployeeReaderDbContext _context;
 
-        private string connectionString;
-
-        public EmployeesReader(string connectionString)
+        public EmployeesReader(DbContextOptions<EmployeeReaderDbContext> options)
         {
-            this.connectionString = connectionString;
+            _context = new EmployeeReaderDbContext(options);
         }
 
         public List<Employee> GetAllEmployeesAndCountScore()
         {
-            List<Employee> items = new List<Employee>();
-
             try
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    connection.Open();
-                    string sqlQuery = @"SELECT 
-    e.fullName AS fullName,
-    e.typeService AS TypeService,
-    e.phoneNumber AS PhoneNumber,
-    (SELECT COUNT(DISTINCT CONCAT(es.idService, '-', es.[dateTime], '-', es.idEmployee, '-', es.endTime))
-     FROM Employee_Service es
-     WHERE es.idEmployee = e.id AND es.dateTime >= DATEADD(month, -2, GETDATE())) AS ProcedureCount
-FROM 
-    Employees e
-ORDER BY 
-    ProcedureCount DESC, e.fullName;
-
-";
-
-                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                return _context.Employees
+                    .OrderByDescending(e => e.Employee_Service
+                        .Where(es => es.dateTime >= DateTime.Now.AddMonths(-2))
+                        .Select(es => new { es.idService, es.dateTime, es.idEmployee, es.endTime })
+                        .Distinct()
+                        .Count())
+                    .ThenBy(e => e.fullName)
+                    .Select(e => new Employee
                     {
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                string name = reader.GetString(0);
-                                string type = reader.GetString(1);
-                                decimal phoneNumber = reader.GetDecimal(2);
-                                int score = reader.GetInt32(3);
-
-                                Employee item = new Employee
-                                {
-                                    fullName = name,
-                                    typeService = type,
-                                    phoneNumber = phoneNumber,
-                                    score = score
-                                };
-                                items.Add(item);
-                            }
-                        }
-                    }
-                }
+                        fullName = e.fullName,
+                        typeService = e.typeService,
+                        phoneNumber = e.phoneNumber,
+                        score = e.Employee_Service
+                            .Where(es => es.dateTime >= DateTime.Now.AddMonths(-2))
+                            .Select(es => new { es.idService, es.dateTime, es.idEmployee, es.endTime })
+                            .Distinct()
+                            .Count()
+                    })
+                    .ToList();
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                return new List<Employee>();
             }
-
-            return items;
         }
 
         public List<Employee> GetEmployeesByServiceType(string serviceType)
         {
-            List<Employee> items = new List<Employee>();
-
             try
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    connection.Open();
-                    string sqlQuery = @"SELECT id AS id,
-fullName AS fullName, 
-typeService AS typeService,
-employmentContractNumber AS employmentContractNumber,
-birthDate AS birthDate,
-permanentEmployee AS permanentEmployee,
-phoneNumber AS phoneNumber
-FROM Employees
-WHERE typeService = @TypeOfService
-";
-
-                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                return _context.Employees
+                    .Where(e => e.typeService == serviceType)
+                    .Select(e => new Employee
                     {
-                        command.Parameters.AddWithValue("@TypeOfService", serviceType);
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                int id = reader.GetInt32(0);
-                                string name = reader.GetString(1);
-                                string type = reader.GetString(2);
-                                string employmentContractNumber = reader.GetString(3);
-                                DateTime birthDate = reader.GetDateTime(4);
-                                bool permanentEmployee = reader.GetBoolean(5);
-                                decimal phoneNumber = reader.GetDecimal(6);
-
-                                if (type == serviceType)
-                                {
-                                    Employee item = new Employee
-                                    {
-                                        id = id,
-                                        fullName = name,
-                                        typeService = type,
-                                        birthDate = birthDate,
-                                        permanentEmployee = permanentEmployee,
-                                        employmentContractNumber = employmentContractNumber,
-                                        phoneNumber = phoneNumber,
-                                    };
-                                    items.Add(item);
-                                }
-                            }
-                        }
-                    }
-                }
+                        id = e.id,
+                        fullName = e.fullName,
+                        typeService = e.typeService,
+                        employmentContractNumber = e.employmentContractNumber,
+                        birthDate = e.birthDate,
+                        permanentEmployee = e.permanentEmployee,
+                        phoneNumber = e.phoneNumber
+                    })
+                    .ToList();
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                return new List<Employee>();
             }
-
-            return items;
         }
+    }
+
+    public class EmployeeReaderDbContext : DbContext
+    {
+        public DbSet<Employee> Employees { get; set; }
+        public DbSet<Employee_Service> Employee_Service { get; set; }
+
+        public EmployeeReaderDbContext(DbContextOptions<EmployeeReaderDbContext> options) : base(options) { }
     }
 }

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 
 namespace Business_Logic
@@ -39,8 +34,8 @@ namespace Business_Logic
             }
         }
 
-        private DateTime _endTime;
-        public DateTime endTime
+        private TimeSpan _endTime;
+        public TimeSpan endTime
         {
             get { return _endTime; }
             set

@@ -1,20 +1,6 @@
-﻿using Business_Logic;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
 
 namespace Nail_Salon_MVVM
 {
@@ -25,7 +11,7 @@ namespace Nail_Salon_MVVM
         public MainWindow()
         {
             InitializeComponent();
-            MainViewModel viewModel = new MainViewModel();
+            MainViewModel viewModel = new MainViewModel(connectionString);
             DataContext = viewModel;
         }
 
@@ -34,8 +20,8 @@ namespace Nail_Salon_MVVM
             if (DataContext is MainViewModel viewModel)
             {
                 DateTime selectedDate = (DateTime)ScheduleDatePicker.SelectedDate;
-                viewModel.SelectedDate = selectedDate; // Установка выбранной даты во ViewModel
-                viewModel.ScheduleViewModel.LoadDataForSelectedDate(selectedDate);
+                viewModel.SelectedDate = selectedDate;
+                viewModel.ScheduleViewModel.LoadScheduleItems(selectedDate, connectionString);
             }
         }
 

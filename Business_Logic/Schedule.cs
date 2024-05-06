@@ -1,9 +1,15 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace Business_Logic
 {
     public class Schedule : INotifyPropertyChanged
     {
+        [Key]
+        [Column("id")]
+        public int id { get; set; }
+
         private string _customerName;
         public string customerName
         {

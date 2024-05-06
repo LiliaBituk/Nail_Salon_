@@ -14,7 +14,7 @@ namespace Nail_Salon_MVVM
         public ClientRecordingWindow(string connectionString)
         {
             InitializeComponent();
-            ViewModel = new ClientRecordingViewModel();
+            ViewModel = new ClientRecordingViewModel(connectionString);
             DataContext = ViewModel;
             this.connectionString = connectionString;
         }
@@ -24,7 +24,6 @@ namespace Nail_Salon_MVVM
             var selectedService = (sender as ComboBox).SelectedItem as Service;
 
             ViewModel.SelectedService = selectedService;
-            //GetEmployeesByServiceType(string serviceType);
         }
 
         private void Employee_ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -32,7 +31,6 @@ namespace Nail_Salon_MVVM
             var selectedEmployee = (sender as ComboBox).SelectedItem as Employee;
 
             ViewModel.SelectedEmployee = selectedEmployee;
-            //GetEmployeesByServiceType(string serviceType);
         }
 
 
@@ -41,6 +39,8 @@ namespace Nail_Salon_MVVM
             string fullName = ViewModel.fullName;
             DateTime? birthDate = ViewModel.birthDate;
             decimal phoneNumber = ViewModel.phoneNumber;
+            DateOnly appointmentDate = ViewModel.SelectedDate;
+            TimeSpan appointmentTime = ViewModel.SelectedTime;
 
             Customer client = new Customer { fullName=fullName, birthDate=birthDate, phoneNumber=phoneNumber };
 
@@ -49,9 +49,21 @@ namespace Nail_Salon_MVVM
 
             if (client != null && selectedService != null && selectedEmployee != null)
             {
-                ClientRecord clientRecord = new ClientRecord(connectionString, client, selectedService, selectedEmployee);
+                DateTime appointmentDateTime = new DateTime(appointmentDate.Year, appointmentDate.Month, appointmentDate.Day,
+                                            appointmentTime.Hours, appointmentTime.Minutes, appointmentTime.Seconds);
 
+                ClientRecord clientRecord = new ClientRecord(connectionString, client, selectedService, selectedEmployee, appointmentDateTime);
                 clientRecord.ClientRecording();
+
+                if (!clientRecord.RecordingIsSucsessfull)
+                {
+                    MessageBox.Show("Мастер занят в это время", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+                else
+                {
+                    MessageBox.Show($"{fullName} записан(а) {appointmentDate} {ViewModel.SelectedTime} на {selectedService.name} к {selectedEmployee.fullName}", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Close();
+                }
             }
             else
             {

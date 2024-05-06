@@ -1,79 +1,77 @@
-﻿
-using System.Collections.Generic;
-using System;
-using Business_Logic;
-using Microsoft.Data.SqlClient;
+﻿using Business_Logic;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess
 {
     public class ScheduleReader
     {
-        private string connectionString;
+        private readonly ScheduleReaderDbContext _context;
 
-        public ScheduleReader(string connectionString)
+        public ScheduleReader(DbContextOptions<ScheduleReaderDbContext> options)
         {
-            this.connectionString = connectionString;
+            _context = new ScheduleReaderDbContext(options);
         }
 
-        public List<Schedule> getData(DateTime selectedDate)
+        public List<Schedule> GetSchedule(DateTime selectedDate)
         {
-            List<Schedule> items = new List<Schedule>();
-
             try
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                List<Schedule> items = new List<Schedule>();
+
+                var query = (from cs in _context.Client_Service
+                             join c in _context.Customers on cs.idCustomer equals c.id
+                             join s in _context.Services on cs.idService equals s.id
+                             join es in _context.Employee_Service on s.id equals es.idService
+                             join e in _context.Employees on es.idEmployee equals e.id
+                             where cs.dateTime.Date == selectedDate.Date
+                             select new
+                             {
+                                 CustomerName = c.fullName,
+                                 ServiceName = s.name,
+                                 StartDateTime = cs.dateTime,
+                                 EmployeeName = e.fullName,
+                                 Price = s.price
+                             }).Distinct();
+
+                foreach (var result in query)
                 {
-                    connection.Open();
-                    string sqlQuery = @"SELECT DISTINCT 
-                                            c.fullName AS fullName, 
-                                            s.name AS name, 
-                                            cs.dateTime AS sateTime, 
-                                            e.fullName AS fullName, 
-                                            s.price AS price 
-                                        FROM 
-                                            Client_Service cs 
-                                            JOIN Customers c ON cs.idCustomer = c.id 
-                                            JOIN Services s ON cs.idService = s.id 
-                                            JOIN Employee_Service es ON es.idService = s.id 
-                                            JOIN Employees e ON es.idEmployee = e.id 
-                                        WHERE 
-                                            CONVERT(date, cs.dateTime) = @SelectedDate 
-                                        ORDER BY 
-                                            cs.dateTime";
-
-                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                    Schedule item = new Schedule
                     {
-                        command.Parameters.AddWithValue("@SelectedDate", selectedDate);
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                string customerName = reader.GetString(0);
-                                string serviceName = reader.GetString(1);
-                                DateTime dataTime = reader.GetDateTime(2);
-                                string employeeName = reader.GetString(3);
-                                decimal price = reader.GetDecimal(4);
-
-                                Schedule item = new Schedule
-                                {
-                                    customerName = customerName,
-                                    serviceName = serviceName,
-                                    startDateTime = dataTime,
-                                    employeeName = employeeName,
-                                    price = price
-                                };
-                                items.Add(item);
-                            }
-                        }
-                    }
+                        customerName = result.CustomerName,
+                        serviceName = result.ServiceName,
+                        startDateTime = result.StartDateTime,
+                        employeeName = result.EmployeeName,
+                        price = result.Price
+                    };
+                    items.Add(item);
                 }
+
+                return items;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                return new List<Schedule>();
             }
+        }
+    }
 
-            return items;
+    public class ScheduleReaderDbContext : DbContext
+    {
+        public DbSet<Client_Service> Client_Service { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Service> Services { get; set; }
+        public DbSet<Employee_Service> Employee_Service { get; set; }
+        public DbSet<Employee> Employees { get; set; }
+
+        public DbSet<Schedule> Schedule { get; set; }
+
+        public ScheduleReaderDbContext(DbContextOptions<ScheduleReaderDbContext> options) : base(options) { }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Schedule>()
+                .HasKey(s => s.id);
         }
     }
 }

@@ -5,18 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Nail_Salon_MVVM"
         mc:Ignorable="d"
-        Title="Новая запись" Height="450" Width="400">
+        Title="Новая запись" Height="536" Width="400">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="43*"/>
+            <RowDefinition Height="29*"/>
+            <RowDefinition Height="52*"/>
+            <RowDefinition Height="29*"/>
+            <RowDefinition Height="44*"/>
+            <RowDefinition Height="61*"/>
+            <RowDefinition Height="55*"/>
             <RowDefinition Height="46*"/>
-            <RowDefinition Height="24*"/>
-            <RowDefinition Height="35*"/>
-            <RowDefinition Height="70*"/>
-            <RowDefinition Height="49*"/>
-            <RowDefinition Height="123*"/>
+            <RowDefinition Height="47*"/>
+            <RowDefinition Height="46*"/>
+            <RowDefinition Height="67*"/>
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Text="ФИО:" Margin="0,0,0,28" Grid.RowSpan="2"/>
@@ -37,10 +40,30 @@
         <ComboBox Grid.Row="7" ItemsSource="{Binding AvailableEmployees}" 
                   DisplayMemberPath="fullName" 
                   SelectedItem="{Binding SelectedEmployee, Mode=TwoWay}"
-                  Margin="10,10,10,10"
+                  Margin="10,10,10,6"
                   SelectionChanged="Employee_ComboBox_SelectionChanged"/>
 
-        <Button Grid.Row="8" Content="Записать" Click="Button_Record_Click" Margin="5"/>
+        <TextBlock Grid.Row="8" Text="Дата записи:" Margin="10,10,-10,10"/>
+        <DatePicker Grid.Row="9" Margin="5,6,5,5">
+            <DatePicker.SelectedDate>
+                <Binding Path="SelectedDate" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.Converter>
+                        <local:DateOnlyToNullableDateTimeConverter/>
+                    </Binding.Converter>
+                </Binding>
+            </DatePicker.SelectedDate>
+        </DatePicker>
+
+
+        <ComboBox Grid.Row="10" SelectedValue="{Binding SelectedTime, Mode=TwoWay}" SelectedValuePath="Content" Margin="5,5,5,5" HorizontalContentAlignment="Left">
+            <ComboBoxItem Content="09:00"/>
+            <ComboBoxItem Content="10:00"/>
+            <ComboBoxItem Content="11:00"/>
+            <ComboBoxItem Content="12:00"/>
+            <ComboBoxItem Content="13:00"/>
+        </ComboBox>
+
+        <Button Grid.Row="11" Content="Записать" Click="Button_Record_Click" Margin="5,10,5,5"/>
 
     </Grid>
 </Window>

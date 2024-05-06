@@ -1,10 +1,4 @@
-﻿using Nail_Salon_MVVM;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using System;
 using System.ComponentModel;
 
 namespace Nail_Salon_MVVM
@@ -28,10 +22,10 @@ namespace Nail_Salon_MVVM
             }
         }
 
-        public MainViewModel()
+        public MainViewModel(string connectionString)
         {
-            ScheduleViewModel = new ScheduleItemViewModel();
-            EmployeesViewModel = new EmployeesViewModel();
+            ScheduleViewModel = new ScheduleItemViewModel(connectionString);
+            EmployeesViewModel = new EmployeesViewModel(connectionString);
             SelectedDate = DateTime.Now;
         }
 

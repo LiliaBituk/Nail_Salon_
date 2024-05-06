@@ -90,6 +90,8 @@ namespace Business_Logic
             }
         }
 
+        public ICollection<Employee_Service> Employee_Service { get; set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged(string propertyName)

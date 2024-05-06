@@ -1,23 +1,20 @@
 ﻿using Business_Logic;
 using DataAccess;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Nail_Salon_MVVM
 {
     public class ScheduleItemViewModel : INotifyPropertyChanged
     {
-
-        public ScheduleItemViewModel()
+        public ScheduleItemViewModel(string connectionString)
         {
             ScheduleItems = new ObservableCollection<Schedule>();
-            SelectedDate = DateTime.Now; // Установка текущей даты
-            LoadScheduleItems(SelectedDate);
+            SelectedDate = DateTime.Now;
+            LoadScheduleItems(SelectedDate, connectionString);
         }
 
         private ObservableCollection<Schedule> _scheduleItems;
@@ -50,29 +47,31 @@ namespace Nail_Salon_MVVM
             }
         }
 
-        public void LoadDataForSelectedDate(DateTime SelectedDate)
+        public void LoadScheduleItems(DateTime selectedDate, string connectionString)
         {
-            Console.WriteLine("Loading schedule items for date: " + SelectedDate.ToString()); // Отладочное сообщение
-            ScheduleItems.Clear();
-            LoadScheduleItems(SelectedDate);
-        }
-
-        private void LoadScheduleItems(DateTime selectedDate)
-        {
-            ScheduleReader reader = new ScheduleReader("Data Source=MSI;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False");
-            List<Schedule> listScheduleitems = reader.getData(selectedDate);
-
-            ScheduleItems.Clear();
-
-            foreach (Schedule item in listScheduleitems)
+            try
             {
-                ScheduleItems.Add(item);
+                var optionsBuilder = new DbContextOptionsBuilder<ScheduleReaderDbContext>();
+                optionsBuilder.UseSqlServer(connectionString);
+                var dbContextOptions = optionsBuilder.Options;
+
+                ScheduleReader reader = new ScheduleReader(dbContextOptions);
+                List<Schedule> listScheduleitems = reader.GetSchedule(selectedDate);
+
+                ScheduleItems.Clear();
+
+                foreach (Schedule item in listScheduleitems)
+                {
+                    ScheduleItems.Add(item);
+                }
+
+                OnPropertyChanged(nameof(ScheduleItems));
             }
-
-            OnPropertyChanged(nameof(ScheduleItems)); // Уведомление интерфейса об изменении коллекции
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
-
-
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -82,4 +81,3 @@ namespace Nail_Salon_MVVM
         }
     }
 }
-
