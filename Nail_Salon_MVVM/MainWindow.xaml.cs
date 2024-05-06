@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Business_Logic;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,35 +15,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-//namespace Nail_Salon_MVVM
-//{
-//    public partial class MainWindow : Window
-//    {
-//        public MainWindow()
-//        {
-//            InitializeComponent();
-//            DataContext = new MainViewModel();
-//        }
-
-//        private void ScheduleDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
-//        {
-//            if (DataContext is MainViewModel viewModel)
-//            {
-//                viewModel.ScheduleViewModel.LoadDataForSelectedDate();
-//                //viewModel.LoadDataForSelectedDate();
-//            }
-//        }
-//    }
-//}
 
 namespace Nail_Salon_MVVM
 {
     public partial class MainWindow : Window
     {
+        private string connectionString = "Data Source=MSI;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;MultiSubnetFailover=False";
+
         public MainWindow()
         {
             InitializeComponent();
-            //ScheduleItemViewModel viewModel = new ScheduleItemViewModel();
             MainViewModel viewModel = new MainViewModel();
             DataContext = viewModel;
         }
@@ -54,6 +37,12 @@ namespace Nail_Salon_MVVM
                 viewModel.SelectedDate = selectedDate; // Установка выбранной даты во ViewModel
                 viewModel.ScheduleViewModel.LoadDataForSelectedDate(selectedDate);
             }
+        }
+
+        private void Button_Client_Recording_Click(object sender, RoutedEventArgs e)
+        {
+            ClientRecordingWindow selectServiceWindow = new ClientRecordingWindow(connectionString);
+            selectServiceWindow.ShowDialog();
         }
     }
 }

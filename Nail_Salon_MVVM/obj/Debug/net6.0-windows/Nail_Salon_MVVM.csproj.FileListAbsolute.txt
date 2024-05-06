@@ -70,3 +70,13 @@ C:\Users\lilia\source\repos\Nail_Salon_MVVM\Nail_Salon_MVVM\obj\Debug\net6.0-win
 C:\Users\lilia\source\repos\Nail_Salon_MVVM\Nail_Salon_MVVM\obj\Debug\net6.0-windows\Nail_Salon_MVVM.genruntimeconfig.cache
 C:\Users\lilia\source\repos\Nail_Salon_MVVM\Nail_Salon_MVVM\obj\Debug\net6.0-windows\ref\Nail_Salon_MVVM.dll
 C:\Users\lilia\source\repos\Nail_Salon_MVVM\Nail_Salon_MVVM\obj\Debug\net6.0-windows\Nail_Salon_MVVM_Content.g.cs
+C:\Users\lilia\source\repos\Nail_Salon_MVVM\Nail_Salon_MVVM\obj\Debug\net6.0-windows\ClientRecordingWindow.g.cs
+C:\Users\lilia\source\repos\Nail_Salon_MVVM\Nail_Salon_MVVM\obj\Debug\net6.0-windows\ClientRecordingWindow.baml
+C:\Users\lilia\source\repos\Nail_Salon_MVVM\Nail_Salon_MVVM\bin\Debug\net6.0-windows\EntityFramework.SqlServer.dll
+C:\Users\lilia\source\repos\Nail_Salon_MVVM\Nail_Salon_MVVM\bin\Debug\net6.0-windows\EntityFramework.dll
+C:\Users\lilia\source\repos\Nail_Salon_MVVM\Nail_Salon_MVVM\bin\Debug\net6.0-windows\System.Data.SqlClient.dll
+C:\Users\lilia\source\repos\Nail_Salon_MVVM\Nail_Salon_MVVM\bin\Debug\net6.0-windows\runtimes\win-arm64\native\sni.dll
+C:\Users\lilia\source\repos\Nail_Salon_MVVM\Nail_Salon_MVVM\bin\Debug\net6.0-windows\runtimes\win-x64\native\sni.dll
+C:\Users\lilia\source\repos\Nail_Salon_MVVM\Nail_Salon_MVVM\bin\Debug\net6.0-windows\runtimes\win-x86\native\sni.dll
+C:\Users\lilia\source\repos\Nail_Salon_MVVM\Nail_Salon_MVVM\bin\Debug\net6.0-windows\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
+C:\Users\lilia\source\repos\Nail_Salon_MVVM\Nail_Salon_MVVM\bin\Debug\net6.0-windows\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll

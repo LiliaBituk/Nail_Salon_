@@ -1,23 +1,11 @@
-﻿////namespace Business_Logic
-////{
-////    public class Schedule
-////    {
-////        public string CustomerName { get; set; }
-////        public string ServiceName { get; set; }
-////        public DateTime StartDataTime { get; set; }
-////        public string EmployeeName { get; set; }
-////        public decimal Price { get; set; }
-////    }
-////}
-
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace Business_Logic
 {
     public class Schedule : INotifyPropertyChanged
     {
         private string _customerName;
-        public string CustomerName
+        public string customerName
         {
             get { return _customerName; }
             set
@@ -25,13 +13,13 @@ namespace Business_Logic
                 if (_customerName != value)
                 {
                     _customerName = value;
-                    OnPropertyChanged(nameof(CustomerName));
+                    OnPropertyChanged(nameof(customerName));
                 }
             }
         }
 
         private string _serviceName;
-        public string ServiceName
+        public string serviceName
         {
             get { return _serviceName; }
             set
@@ -39,13 +27,13 @@ namespace Business_Logic
                 if (_serviceName != value)
                 {
                     _serviceName = value;
-                    OnPropertyChanged(nameof(ServiceName));
+                    OnPropertyChanged(nameof(serviceName));
                 }
             }
         }
 
         private DateTime _startDateTime;
-        public DateTime StartDateTime
+        public DateTime startDateTime
         {
             get { return _startDateTime; }
             set
@@ -53,13 +41,13 @@ namespace Business_Logic
                 if (_startDateTime != value)
                 {
                     _startDateTime = value;
-                    OnPropertyChanged(nameof(StartDateTime));
+                    OnPropertyChanged(nameof(startDateTime));
                 }
             }
         }
 
         private string _employeeName;
-        public string EmployeeName
+        public string employeeName
         {
             get { return _employeeName; }
             set
@@ -67,13 +55,13 @@ namespace Business_Logic
                 if (_employeeName != value)
                 {
                     _employeeName = value;
-                    OnPropertyChanged(nameof(EmployeeName));
+                    OnPropertyChanged(nameof(employeeName));
                 }
             }
         }
 
         private decimal _price;
-        public decimal Price
+        public decimal price
         {
             get { return _price; }
             set
@@ -81,7 +69,7 @@ namespace Business_Logic
                 if (_price != value)
                 {
                     _price = value;
-                    OnPropertyChanged(nameof(Price));
+                    OnPropertyChanged(nameof(price));
                 }
             }
         }
@@ -94,16 +82,3 @@ namespace Business_Logic
         }
     }
 }
-
-
-//namespace Business_Logic
-//{
-//    public class Schedule
-//    {
-//        public string CustomerName { get; set; }
-//        public string ServiceName { get; set; }
-//        public DateTime StartDateTime { get; set; }
-//        public string EmployeeName { get; set; }
-//        public decimal Price { get; set; }
-//    }
-//}

@@ -1,0 +1,46 @@
+﻿<Window x:Class="Nail_Salon_MVVM.ClientRecordingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Nail_Salon_MVVM"
+        mc:Ignorable="d"
+        Title="Новая запись" Height="450" Width="400">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="43*"/>
+            <RowDefinition Height="46*"/>
+            <RowDefinition Height="24*"/>
+            <RowDefinition Height="35*"/>
+            <RowDefinition Height="70*"/>
+            <RowDefinition Height="49*"/>
+            <RowDefinition Height="123*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="ФИО:" Margin="0,0,0,28" Grid.RowSpan="2"/>
+        <TextBox Grid.Row="1" Text="{Binding fullName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5,5,5,5"/>
+
+        <TextBlock Grid.Row="2" Text="Дата рождения:" Margin="0,0,0,46" Grid.RowSpan="2"/>
+        <DatePicker Grid.Row="3" SelectedDate="{Binding birthDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5,5,5,5"/>
+
+        <TextBlock Grid.Row="4" Text="Номер телефона:" Margin="0,0,0,6"/>
+        <TextBox Grid.Row="5" Text="{Binding phoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5,5,5,5"/>
+
+        <ComboBox Grid.Row="6" ItemsSource="{Binding AvailableServices}" 
+                  DisplayMemberPath="name" 
+                  SelectedItem="{Binding SelectedService, Mode=TwoWay}"
+                  Margin="10,10,10,10"
+                  SelectionChanged="Service_ComboBox_SelectionChanged"/>
+
+        <ComboBox Grid.Row="7" ItemsSource="{Binding AvailableEmployees}" 
+                  DisplayMemberPath="fullName" 
+                  SelectedItem="{Binding SelectedEmployee, Mode=TwoWay}"
+                  Margin="10,10,10,10"
+                  SelectionChanged="Employee_ComboBox_SelectionChanged"/>
+
+        <Button Grid.Row="8" Content="Записать" Click="Button_Record_Click" Margin="5"/>
+
+    </Grid>
+</Window>

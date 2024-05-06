@@ -45,7 +45,8 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="188*"/>
-            <ColumnDefinition Width="307*"/>
+            <ColumnDefinition Width="99*"/>
+            <ColumnDefinition Width="208*"/>
             <ColumnDefinition Width="305*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -59,15 +60,15 @@
         <DatePicker x:Name="ScheduleDatePicker" SelectedDate="{Binding SelectedDate, Mode=TwoWay}" SelectedDateChanged="ScheduleDatePicker_SelectedDateChanged" Margin="10,10,10,10" Style="{StaticResource PinkDatePickerStyle}" RenderTransformOrigin="0.5,0.5" />
 
         <!-- Контент -->
-        <TabControl Grid.Row="1" TabStripPlacement="Left" Margin="0,10,0,0" Grid.ColumnSpan="3">
+        <TabControl Grid.Row="1" TabStripPlacement="Left" Margin="0,10,0,0" Grid.ColumnSpan="4">
             <TabItem Header="Расписание" >
                 <DataGrid ItemsSource="{Binding ScheduleViewModel.ScheduleItems}" AutoGenerateColumns="False" Style="{StaticResource PinkDataGridStyle}">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Клиент" Binding="{Binding CustomerName}" />
-                        <DataGridTextColumn Header="Услуга" Binding="{Binding ServiceName}" />
-                        <DataGridTextColumn Header="Дата / Время" Binding="{Binding StartDateTime}" />
-                        <DataGridTextColumn Header="Мастер" Binding="{Binding EmployeeName}" />
-                        <DataGridTextColumn Header="Стоимость" Binding="{Binding Price}" />
+                        <DataGridTextColumn Header="Клиент" Binding="{Binding customerName}" />
+                        <DataGridTextColumn Header="Услуга" Binding="{Binding serviceName}" />
+                        <DataGridTextColumn Header="Дата / Время" Binding="{Binding startDateTime}" />
+                        <DataGridTextColumn Header="Мастер" Binding="{Binding employeeName}" />
+                        <DataGridTextColumn Header="Стоимость" Binding="{Binding price}" />
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
@@ -77,10 +78,10 @@
                 <Grid Background="#FFFDF6F7">
                     <DataGrid ItemsSource="{Binding EmployeesViewModel.EmployeesItems}" AutoGenerateColumns="False" Style="{StaticResource PinkDataGridStyle}">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Имя" Binding="{Binding EmployeeName}" />
-                            <DataGridTextColumn Header="Специализация" Binding="{Binding ServiceType}" />
-                            <DataGridTextColumn Header="Номер телефона" Binding="{Binding PhoneNumber}" />
-                            <DataGridTextColumn Header="Процедуры за месяц" Binding="{Binding Score}" />
+                            <DataGridTextColumn Header="Имя" Binding="{Binding fullName}" />
+                            <DataGridTextColumn Header="Специализация" Binding="{Binding typeService}" />
+                            <DataGridTextColumn Header="Номер телефона" Binding="{Binding phoneNumber}" />
+                            <DataGridTextColumn Header="Процедуры за месяц" Binding="{Binding score}" />
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
@@ -103,5 +104,6 @@
 
 
         </Grid>
+        <Button Grid.Column="1" Content="Записать" HorizontalAlignment="Center" VerticalAlignment="Center" Height="34" Width="63" Background="#FFD6A4A7" FontWeight="Bold" Click="Button_Client_Recording_Click"/>
     </Grid>
 </Window>

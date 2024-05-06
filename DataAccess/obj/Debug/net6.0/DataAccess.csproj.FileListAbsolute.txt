@@ -28,3 +28,5 @@ C:\Users\lilia\source\repos\Nail_Salon_MVVM\DataAccess\obj\Debug\net6.0\DataAcce
 C:\Users\lilia\source\repos\Nail_Salon_MVVM\DataAccess\obj\Debug\net6.0\DataAccess.csproj.CoreCompileInputs.cache
 C:\Users\lilia\source\repos\Nail_Salon_MVVM\DataAccess\obj\Debug\net6.0\DataAccess.csproj.CopyComplete
 C:\Users\lilia\source\repos\Nail_Salon_MVVM\DataAccess\obj\Debug\net6.0\ref\DataAccess.dll
+C:\Users\lilia\source\repos\Nail_Salon_MVVM\DataAccess\bin\Debug\net6.0\DataAccess.runtimeconfig.json
+C:\Users\lilia\source\repos\Nail_Salon_MVVM\DataAccess\obj\Debug\net6.0\DataAccess.genruntimeconfig.cache
