@@ -5,31 +5,82 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Nail_Salon_MVVM"
         mc:Ignorable="d"
-        Title="Новая запись" Height="536" Width="400">
+        Title="Новая запись" Height="559" Width="400" Background="#FFFFDCF2">
+
+    <Window.Resources>
+
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#FFF78BCF"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#FFF78BCF"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Foreground" Value="#FFC71585"/>
+            <Setter Property="Background" Value="#FFC71585"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#FFF78BCF"/>
+        </Style>
+
+        <Style TargetType="DatePicker">
+            <Setter Property="Background" Value="#FFF78BCF"/>
+            <Setter Property="Foreground" Value="#FFC71585"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#FFC71585"/>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Foreground" Value="#FFC71585"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#FFCC489B"/>
+        </Style>
+
+    </Window.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="29*"/>
-            <RowDefinition Height="52*"/>
-            <RowDefinition Height="29*"/>
-            <RowDefinition Height="44*"/>
-            <RowDefinition Height="61*"/>
+            <RowDefinition Height="Auto" MinHeight="18"/>
+            <RowDefinition Height="Auto" MinHeight="54"/>
+            <RowDefinition Height="32*"/>
+            <RowDefinition Height="54*"/>
+            <RowDefinition Height="39*"/>
+            <RowDefinition Height="49*"/>
             <RowDefinition Height="55*"/>
-            <RowDefinition Height="46*"/>
-            <RowDefinition Height="47*"/>
-            <RowDefinition Height="46*"/>
-            <RowDefinition Height="67*"/>
+            <RowDefinition Height="51*"/>
+            <RowDefinition Height="38*"/>
+            <RowDefinition Height="49*"/>
+            <RowDefinition Height="51*"/>
+            <RowDefinition Height="52*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="ФИО:" Margin="0,0,0,28" Grid.RowSpan="2"/>
-        <TextBox Grid.Row="1" Text="{Binding fullName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5,5,5,5"/>
+        <TextBlock Grid.Row="0" Text="ФИО:" Margin="10,0,0,28" Grid.RowSpan="2"/>
+        <TextBox Grid.Row="1" Text="{Binding fullName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,10,10,10"/>
 
-        <TextBlock Grid.Row="2" Text="Дата рождения:" Margin="0,0,0,46" Grid.RowSpan="2"/>
-        <DatePicker Grid.Row="3" SelectedDate="{Binding birthDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5,5,5,5"/>
+        <TextBlock Grid.Row="2" Text="Дата рождения:" Margin="10,10,0,4"/>
+        <DatePicker Grid.Row="3" SelectedDate="{Binding birthDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,5,10,10"/>
 
-        <TextBlock Grid.Row="4" Text="Номер телефона:" Margin="0,0,0,6"/>
-        <TextBox Grid.Row="5" Text="{Binding phoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5,5,5,5"/>
+        <TextBlock Grid.Row="4" Text="Номер телефона:" Margin="10,10,0,10"/>
+        <TextBox Grid.Row="5" Text="{Binding phoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,5,10,10"/>
 
         <ComboBox Grid.Row="6" ItemsSource="{Binding AvailableServices}" 
                   DisplayMemberPath="name" 
@@ -40,11 +91,11 @@
         <ComboBox Grid.Row="7" ItemsSource="{Binding AvailableEmployees}" 
                   DisplayMemberPath="fullName" 
                   SelectedItem="{Binding SelectedEmployee, Mode=TwoWay}"
-                  Margin="10,10,10,6"
+                  Margin="10,10,10,10"
                   SelectionChanged="Employee_ComboBox_SelectionChanged"/>
 
         <TextBlock Grid.Row="8" Text="Дата записи:" Margin="10,10,-10,10"/>
-        <DatePicker Grid.Row="9" Margin="5,6,5,5">
+        <DatePicker Grid.Row="9" Margin="5,6,10,10">
             <DatePicker.SelectedDate>
                 <Binding Path="SelectedDate" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
                     <Binding.Converter>
@@ -55,13 +106,7 @@
         </DatePicker>
 
 
-        <ComboBox Grid.Row="10" SelectedValue="{Binding SelectedTime, Mode=TwoWay}" SelectedValuePath="Content" Margin="5,5,5,5" HorizontalContentAlignment="Left">
-            <ComboBoxItem Content="09:00"/>
-            <ComboBoxItem Content="10:00"/>
-            <ComboBoxItem Content="11:00"/>
-            <ComboBoxItem Content="12:00"/>
-            <ComboBoxItem Content="13:00"/>
-        </ComboBox>
+        <ComboBox Name="comboBoxTime"  Grid.Row="10" SelectedValue="{Binding SelectedTime, Mode=TwoWay}" SelectedValuePath="Content" Margin="10,10,10,10" HorizontalContentAlignment="Left"/>
 
         <Button Grid.Row="11" Content="Записать" Click="Button_Record_Click" Margin="5,10,5,5"/>
 

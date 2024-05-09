@@ -12,17 +12,17 @@ namespace DataAccess
             _context = new ServiceReaderDbContext(options);
         }
 
-        public List<Service> GetAllServices()
+        public async Task<List<Service>> GetAllServices()
         {
             try
             {
-                return _context.Services
-                    .ToList();
+                return await _context.Services
+                    .ToListAsync();
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return new List<Service>();
+                throw;
             }
         }
     }

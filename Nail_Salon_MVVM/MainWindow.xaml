@@ -8,61 +8,78 @@
         Title="Nail Salon" Height="450" Width="800">
     <Window.Resources>
 
-        <!-- Стили для календаря -->
-        <Style x:Key="PinkDatePickerStyle" TargetType="DatePicker">
-            <Setter Property="Background" Value="#FFD6A4A7" />
-            <!-- Нежно-розовый цвет фона -->
-            <Setter Property="Foreground" Value="Black" />
-            <!-- Белый цвет текста -->
-            <Setter Property="Padding" Value="5" />
-            <!-- Отступы вокруг текста календаря -->
-            <Setter Property="Margin" Value="10" />
-            <!-- Отступы календаря от краев окна -->
-            <Setter Property="BorderThickness" Value="0" />
-            <!-- Убираем границы -->
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#FFF78BCF"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
         </Style>
 
-        <!-- Стили для таблицы -->
-        <Style x:Key="PinkDataGridStyle" TargetType="DataGrid">
-            <Setter Property="Background" Value="#FFD6A4A7" />
-            <!-- Нежно-розовый цвет фона -->
-            <Setter Property="Foreground" Value="Black" />
-            <!-- Черный цвет текста -->
-            <Setter Property="Padding" Value="5" />
-            <!-- Отступы вокруг содержимого ячеек -->
-            <Setter Property="Margin" Value="10" />
-            <!-- Отступы между таблицей и другими элементами -->
-            <Setter Property="BorderThickness" Value="0" />
-            <!-- Убираем границы -->
+        <Style TargetType="DatePicker">
+            <Setter Property="Background" Value="#FFF78BCF"/>
+            <Setter Property="Foreground" Value="#FFC71585"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#FFC71585"/>
         </Style>
+
+        <Style TargetType="DataGrid">
+            <Setter Property="Background" Value="#FFF78BCF"/>
+            <Setter Property="Foreground" Value="#FFC71585"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="BorderThickness" Value="0"/>
+
+            <!-- Стиль для заголовков столбцов -->
+            <Setter Property="ColumnHeaderStyle">
+                <Setter.Value>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="FontWeight" Value="Bold"/>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="TabItem">
+            <Setter Property="Foreground" Value="MediumVioletRed"/>
+            <Setter Property="Background" Value="#FFF78BCF"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="10"/>
+        </Style>
+
     </Window.Resources>
 
     <Window.Background>
-        <SolidColorBrush Color="#FFE7CCCE" />
-        <!-- Устанавливаем нежно-розовый цвет фона -->
+        <SolidColorBrush Color="#FFFCD0EC" />
     </Window.Background>
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="188*"/>
-            <ColumnDefinition Width="99*"/>
-            <ColumnDefinition Width="208*"/>
+            <ColumnDefinition Width="48*"/>
+            <ColumnDefinition Width="190*"/>
+            <ColumnDefinition Width="162*"/>
+            <ColumnDefinition Width="95*"/>
             <ColumnDefinition Width="305*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <!-- Добавляем строку для календаря -->
             <RowDefinition Height="*"/>
-            <!-- Оставляем место для контента -->
         </Grid.RowDefinitions>
 
-        <!-- Календарь -->
-        <DatePicker x:Name="ScheduleDatePicker" SelectedDate="{Binding SelectedDate, Mode=TwoWay}" SelectedDateChanged="ScheduleDatePicker_SelectedDateChanged" Margin="10,10,10,10" Style="{StaticResource PinkDatePickerStyle}" RenderTransformOrigin="0.5,0.5" />
+        <DatePicker x:Name="ScheduleDatePicker" SelectedDate="{Binding SelectedDate, Mode=TwoWay}" SelectedDateChanged="ScheduleDatePicker_SelectedDateChanged" Margin="10,10,10,10"  RenderTransformOrigin="0.5,0.5" Grid.Column="1" />
 
-        <!-- Контент -->
-        <TabControl Grid.Row="1" TabStripPlacement="Left" Margin="0,10,0,0" Grid.ColumnSpan="4">
+        <TabControl Grid.Row="1" TabStripPlacement="Left" Margin="0,10,-24,0" Grid.ColumnSpan="5">
             <TabItem Header="Расписание" >
-                <DataGrid ItemsSource="{Binding ScheduleViewModel.ScheduleItems}" AutoGenerateColumns="False" Style="{StaticResource PinkDataGridStyle}">
+                <DataGrid ItemsSource="{Binding ScheduleViewModel.ScheduleItems}" AutoGenerateColumns="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Клиент" Binding="{Binding customerName}" />
                         <DataGridTextColumn Header="Услуга" Binding="{Binding serviceName}" />
@@ -73,10 +90,9 @@
                 </DataGrid>
             </TabItem>
 
-
             <TabItem Header="Сотрудники">
-                <Grid Background="#FFFDF6F7">
-                    <DataGrid ItemsSource="{Binding EmployeesViewModel.EmployeesItems}" AutoGenerateColumns="False" Style="{StaticResource PinkDataGridStyle}">
+                <Grid>
+                    <DataGrid ItemsSource="{Binding EmployeesViewModel.EmployeesItems}" AutoGenerateColumns="False">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Имя" Binding="{Binding fullName}" />
                             <DataGridTextColumn Header="Специализация" Binding="{Binding typeService}" />
@@ -87,23 +103,18 @@
                 </Grid>
             </TabItem>
 
-            <TabItem Header="Финансы">
-                <Grid Background="#FFFDF6F7"/>
-            </TabItem>
         </TabControl>
-        <Grid>
+        <Grid Grid.ColumnSpan="2" Margin="0,0,0,381" Grid.RowSpan="2">
             <Grid.ColumnDefinitions>
 
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-
                 <RowDefinition Height="37*"/>
                 <RowDefinition Height="180*"/>
-
             </Grid.RowDefinitions>
 
-
         </Grid>
-        <Button Grid.Column="1" Content="Записать" HorizontalAlignment="Center" VerticalAlignment="Center" Height="34" Width="63" Background="#FFD6A4A7" FontWeight="Bold" Click="Button_Client_Recording_Click"/>
+        <Button Grid.Column="2" Content="Записать" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32" Width="142" Click="Button_Client_Recording_Click"/>
+        <Button Content="↺" HorizontalAlignment="Center" VerticalAlignment="Center" Height="28" Width="28" Click="Button_Update_Click" FontSize="7"/>
     </Grid>
 </Window>

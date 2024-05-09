@@ -12,11 +12,11 @@ namespace DataAccess
             _context = new EmployeeReaderDbContext(options);
         }
 
-        public List<Employee> GetAllEmployeesAndCountScore()
+        public async Task<List<Employee>> GetAllEmployeesAndCountScore()
         {
             try
             {
-                return _context.Employees
+                return await _context.Employees
                     .OrderByDescending(e => e.Employee_Service
                         .Where(es => es.dateTime >= DateTime.Now.AddMonths(-2))
                         .Select(es => new { es.idService, es.dateTime, es.idEmployee, es.endTime })
@@ -34,20 +34,20 @@ namespace DataAccess
                             .Distinct()
                             .Count()
                     })
-                    .ToList();
+                    .ToListAsync();
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return new List<Employee>();
+                throw;
             }
         }
 
-        public List<Employee> GetEmployeesByServiceType(string serviceType)
+        public async Task<List<Employee>> GetEmployeesByServiceType(string serviceType)
         {
             try
             {
-                return _context.Employees
+                return await _context.Employees
                     .Where(e => e.typeService == serviceType)
                     .Select(e => new Employee
                     {
@@ -58,13 +58,13 @@ namespace DataAccess
                         birthDate = e.birthDate,
                         permanentEmployee = e.permanentEmployee,
                         phoneNumber = e.phoneNumber
-                    })
-                    .ToList();
+                    }).Distinct()
+                    .ToListAsync();
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return new List<Employee>();
+                throw;
             }
         }
     }

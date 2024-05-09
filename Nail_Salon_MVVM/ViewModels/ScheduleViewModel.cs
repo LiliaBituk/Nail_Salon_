@@ -47,7 +47,7 @@ namespace Nail_Salon_MVVM
             }
         }
 
-        public void LoadScheduleItems(DateTime selectedDate, string connectionString)
+        public async void LoadScheduleItems(DateTime selectedDate, string connectionString)
         {
             try
             {
@@ -56,7 +56,7 @@ namespace Nail_Salon_MVVM
                 var dbContextOptions = optionsBuilder.Options;
 
                 ScheduleReader reader = new ScheduleReader(dbContextOptions);
-                List<Schedule> listScheduleitems = reader.GetSchedule(selectedDate);
+                List<Schedule> listScheduleitems = await reader.GetSchedule(selectedDate);
 
                 ScheduleItems.Clear();
 

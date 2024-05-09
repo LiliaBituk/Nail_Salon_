@@ -35,8 +35,8 @@ namespace Business_Logic
             }
         }
 
-        private DateTime _endTime;
-        public DateTime endTime
+        private TimeSpan _endTime;
+        public TimeSpan endTime
         {
             get { return _endTime; }
             set

@@ -10,12 +10,18 @@
     <Compile Update="ClientRecordingWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="NotificationWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="ClientRecordingWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MainWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="NotificationWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

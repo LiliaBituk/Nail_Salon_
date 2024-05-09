@@ -1,10 +1,10 @@
-﻿using Business_Logic;
-using DataAccess;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using Microsoft.EntityFrameworkCore;
+using Business_Logic;
+using DataAccess;
 
 namespace Nail_Salon_MVVM
 {
@@ -40,16 +40,16 @@ namespace Nail_Salon_MVVM
             }
         }
 
-        public void LoadDataForSelectedDate()
+        public void GetEmployeesTable()
         {
             LoadScheduleItems();
         }
 
-        private void LoadScheduleItems()
+        private async void LoadScheduleItems()
         {
             try
             {
-                List<Employee> listEmployeesItems = _employeesReader.GetAllEmployeesAndCountScore();
+                List<Employee> listEmployeesItems = await _employeesReader.GetAllEmployeesAndCountScore();
 
                 EmployeesItems.Clear();
                 foreach (Employee item in listEmployeesItems)
