@@ -1,75 +1,16 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-
+﻿
 namespace Business_Logic
 {
-    public class Service : INotifyPropertyChanged
+    public class Service 
     {
-        [Key]
-        public int id { get; set; }
+        public int Id { get; set; }
 
-        private string _serviceName;
-        public string name
-        {
-            get { return _serviceName; }
-            set
-            {
-                if (_serviceName != value)
-                {
-                    _serviceName = value;
-                    OnPropertyChanged(nameof(name));
-                }
-            }
-        }
+        public string Name { get; set; }
 
-        private string _serviceType;
-        public string type
-        {
-            get { return _serviceType; }
-            set
-            {
-                if (_serviceType != value)
-                {
-                    _serviceType = value;
-                    OnPropertyChanged(nameof(type));
-                }
-            }
-        }
+        public string Type { get; set; }
 
-        private decimal _servicePrice;
-        public decimal price
-        {
-            get { return _servicePrice; }
-            set
-            {
-                if (_servicePrice != value)
-                {
-                    _servicePrice = value;
-                    OnPropertyChanged(nameof(price));
-                }
-            }
-        }
+        public decimal Price { get; set; }
 
-        private TimeSpan _executionTime;
-        public TimeSpan executionTime
-        {
-            get { return _executionTime; }
-            set
-            {
-                if (_executionTime != value)
-                {
-                    _executionTime = value;
-                    OnPropertyChanged(nameof(executionTime));
-                }
-            }
-        }
-
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        public TimeSpan ExecutionTime { get; set; }
     }
 }

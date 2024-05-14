@@ -22,7 +22,7 @@ namespace Nail_Salon_MVVM
             _dbContext = new EmployeeReaderDbContext(dbContextOptions); 
             _employeesReader = new EmployeesReader(dbContextOptions); 
             EmployeesItems = new ObservableCollection<Employee>();
-            LoadScheduleItems();
+            GetEmployeesTable();
         }
 
         private ObservableCollection<Employee> _employeesItems;

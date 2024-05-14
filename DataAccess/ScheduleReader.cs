@@ -19,21 +19,21 @@ namespace DataAccess
                 List<Schedule> items = new List<Schedule>();
 
                 var query = from cs in _context.Client_Service
-                            join c in _context.Customers on cs.idCustomer equals c.id
-                            join s in _context.Services on cs.idService equals s.id
-                            join es in _context.Employee_Service on s.id equals es.idService
-                            join e in _context.Employees on es.idEmployee equals e.id
-                            where cs.dateTime.Date == selectedDate.Date
+                            join c in _context.Customers on cs.IdCustomer equals c.Id
+                            join s in _context.Services on cs.IdService equals s.Id
+                            join es in _context.Employee_Service on s.Id equals es.IdService
+                            join e in _context.Employees on es.IdEmployee equals e.Id
+                            where cs.DateTime.Date == selectedDate.Date 
                             select new Schedule
                             {
-                                customerName = c.fullName,
-                                serviceName = s.name,
-                                startDateTime = cs.dateTime,
-                                employeeName = e.fullName,
-                                price = s.price
+                                CustomerFullName = c.FullName,
+                                ServiceName = s.Name,
+                                StartDateTime = cs.DateTime,
+                                EmployeeName = e.FullName,
+                                Price = s.Price
                             };
 
-                var schedule = await query.Distinct().OrderBy(cs => cs.startDateTime).ToListAsync();
+                var schedule = await query.Distinct().OrderBy(cs => cs.StartDateTime).ToListAsync();
 
                 return schedule;
             }
@@ -43,6 +43,7 @@ namespace DataAccess
                 throw;
             }
         }
+
     }
 
     public class ScheduleReaderDbContext : DbContext
@@ -60,7 +61,7 @@ namespace DataAccess
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Schedule>()
-                .HasKey(s => s.id);
+                .HasKey(s => s.Id);
         }
     }
 }

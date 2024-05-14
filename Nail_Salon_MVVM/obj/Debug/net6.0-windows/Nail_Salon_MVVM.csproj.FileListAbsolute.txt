@@ -99,3 +99,6 @@ C:\Users\lilia\source\repos\Nail_Salon_MVVM\Nail_Salon_MVVM\bin\Debug\net6.0-win
 C:\Users\lilia\source\repos\Nail_Salon_MVVM\Nail_Salon_MVVM\obj\Debug\net6.0-windows\GeneratedInternalTypeHelper.g.cs
 C:\Users\lilia\source\repos\Nail_Salon_MVVM\Nail_Salon_MVVM\obj\Debug\net6.0-windows\NotificationWindow.baml
 C:\Users\lilia\source\repos\Nail_Salon_MVVM\Nail_Salon_MVVM\obj\Debug\net6.0-windows\NotificationWindow.g.cs
+C:\Users\lilia\source\repos\Nail_Salon_MVVM\Nail_Salon_MVVM\bin\Debug\net6.0-windows\Microsoft.Xaml.Behaviors.dll
+C:\Users\lilia\source\repos\Nail_Salon_MVVM\Nail_Salon_MVVM\bin\Debug\net6.0-windows\Prism.dll
+C:\Users\lilia\source\repos\Nail_Salon_MVVM\Nail_Salon_MVVM\bin\Debug\net6.0-windows\Prism.Wpf.dll

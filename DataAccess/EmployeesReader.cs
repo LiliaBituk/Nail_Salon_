@@ -16,25 +16,25 @@ namespace DataAccess
         {
             try
             {
-                return await _context.Employees
+                var employeesWithScore = await _context.Employees
                     .OrderByDescending(e => e.Employee_Service
-                        .Where(es => es.dateTime >= DateTime.Now.AddMonths(-2))
-                        .Select(es => new { es.idService, es.dateTime, es.idEmployee, es.endTime })
-                        .Distinct()
+                        .Where(es => es.DateTime >= DateTime.Now.AddMonths(-2))
+                        .Select(es => new { es.IdService, es.DateTime, es.IdEmployee, es.EndTime })
                         .Count())
-                    .ThenBy(e => e.fullName)
+                    .ThenBy(e => e.FullName)
                     .Select(e => new Employee
                     {
-                        fullName = e.fullName,
-                        typeService = e.typeService,
-                        phoneNumber = e.phoneNumber,
-                        score = e.Employee_Service
-                            .Where(es => es.dateTime >= DateTime.Now.AddMonths(-2))
-                            .Select(es => new { es.idService, es.dateTime, es.idEmployee, es.endTime })
-                            .Distinct()
+                        FullName = e.FullName,
+                        TypeService = e.TypeService,
+                        PhoneNumber = e.PhoneNumber,
+                        Score = e.Employee_Service
+                            .Where(es => es.DateTime >= DateTime.Now.AddMonths(-2))
+                            .Select(es => new { es.IdService, es.DateTime, es.IdEmployee, es.EndTime })
                             .Count()
                     })
                     .ToListAsync();
+
+                return employeesWithScore;
             }
             catch (Exception ex)
             {
@@ -48,17 +48,17 @@ namespace DataAccess
             try
             {
                 return await _context.Employees
-                    .Where(e => e.typeService == serviceType)
+                    .Where(e => e.TypeService == serviceType)
                     .Select(e => new Employee
                     {
-                        id = e.id,
-                        fullName = e.fullName,
-                        typeService = e.typeService,
-                        employmentContractNumber = e.employmentContractNumber,
-                        birthDate = e.birthDate,
-                        permanentEmployee = e.permanentEmployee,
-                        phoneNumber = e.phoneNumber
-                    }).Distinct()
+                        Id = e.Id,
+                        FullName = e.FullName,
+                        TypeService = e.TypeService,
+                        EmploymentContractNumber = e.EmploymentContractNumber,
+                        BirthDate = e.BirthDate,
+                        PermanentEmployee = e.PermanentEmployee,
+                        PhoneNumber = e.PhoneNumber
+                    })
                     .ToListAsync();
             }
             catch (Exception ex)

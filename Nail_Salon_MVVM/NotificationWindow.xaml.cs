@@ -1,9 +1,16 @@
 ﻿using System.Windows;
+using System.Windows.Input;
 
 namespace Nail_Salon_MVVM
 {
     public partial class NotificationWindow : Window
     {
+        public NotificationViewModel ViewModel { get; set; }
+        public ICommand OkButtonCommand
+        {
+            get { return ViewModel.OkButtonCommand; }
+        }
+
         public string NotificationText { get; set; }
 
         public NotificationWindow(string notificationText)
@@ -11,11 +18,8 @@ namespace Nail_Salon_MVVM
             InitializeComponent();
             NotificationText = notificationText;
             DataContext = this;
-        }
 
-        private void OK_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
+            ViewModel = new NotificationViewModel(this);
         }
     }
 }

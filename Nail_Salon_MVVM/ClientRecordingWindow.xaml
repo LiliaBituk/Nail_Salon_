@@ -74,25 +74,23 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Text="ФИО:" Margin="10,0,0,28" Grid.RowSpan="2"/>
-        <TextBox Grid.Row="1" Text="{Binding fullName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,10,10,10"/>
+        <TextBox Grid.Row="1" Text="{Binding CustomerFullName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,10,10,10"/>
 
         <TextBlock Grid.Row="2" Text="Дата рождения:" Margin="10,10,0,4"/>
-        <DatePicker Grid.Row="3" SelectedDate="{Binding birthDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,5,10,10"/>
+        <DatePicker Grid.Row="3" SelectedDate="{Binding CustomerBirthDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,5,10,10"/>
 
         <TextBlock Grid.Row="4" Text="Номер телефона:" Margin="10,10,0,10"/>
-        <TextBox Grid.Row="5" Text="{Binding phoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,5,10,10"/>
+        <TextBox Grid.Row="5" Text="{Binding CustomerPhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,5,10,10"/>
 
-        <ComboBox Grid.Row="6" ItemsSource="{Binding AvailableServices}" 
-                  DisplayMemberPath="name" 
-                  SelectedItem="{Binding SelectedService, Mode=TwoWay}"
-                  Margin="10,10,10,10"
-                  SelectionChanged="Service_ComboBox_SelectionChanged"/>
+        <ComboBox Grid.Row="6" Name="ServiceComboBox" ItemsSource="{Binding AvailableServices}" 
+          DisplayMemberPath="Name" 
+          SelectedItem="{Binding SelectedService, Mode=TwoWay}"
+          Margin="10,10,10,10"/>
 
-        <ComboBox Grid.Row="7" ItemsSource="{Binding AvailableEmployees}" 
-                  DisplayMemberPath="fullName" 
-                  SelectedItem="{Binding SelectedEmployee, Mode=TwoWay}"
-                  Margin="10,10,10,10"
-                  SelectionChanged="Employee_ComboBox_SelectionChanged"/>
+        <ComboBox Grid.Row="7" x:Name="EmployeeComboBox" ItemsSource="{Binding AvailableEmployees}" 
+          DisplayMemberPath="FullName" 
+          SelectedItem="{Binding SelectedEmployee, Mode=TwoWay}"
+          Margin="10,10,10,10"/>
 
         <TextBlock Grid.Row="8" Text="Дата записи:" Margin="10,10,-10,10"/>
         <DatePicker Grid.Row="9" Margin="5,6,10,10">
@@ -106,9 +104,14 @@
         </DatePicker>
 
 
-        <ComboBox Name="comboBoxTime"  Grid.Row="10" SelectedValue="{Binding SelectedTime, Mode=TwoWay}" SelectedValuePath="Content" Margin="10,10,10,10" HorizontalContentAlignment="Left"/>
+        <ComboBox Name="TimeComboBox"  
+                  Grid.Row="10" 
+                  SelectedValue="{Binding SelectedTime, Mode=TwoWay}" 
+                  SelectedValuePath="Content"
+                  Margin="10,10,10,10"
+                  HorizontalContentAlignment="Left"/>
 
-        <Button Grid.Row="11" Content="Записать" Click="Button_Record_Click" Margin="5,10,5,5"/>
+        <Button Grid.Row="11" Content="Записать" Command="{Binding ButtonCustomerWritingCommand}" Margin="5,10,5,5"/>
 
     </Grid>
 </Window>
