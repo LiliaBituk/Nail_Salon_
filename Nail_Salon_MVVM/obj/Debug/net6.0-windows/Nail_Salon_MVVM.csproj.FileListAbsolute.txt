@@ -102,3 +102,7 @@ C:\Users\lilia\source\repos\Nail_Salon_MVVM\Nail_Salon_MVVM\obj\Debug\net6.0-win
 C:\Users\lilia\source\repos\Nail_Salon_MVVM\Nail_Salon_MVVM\bin\Debug\net6.0-windows\Microsoft.Xaml.Behaviors.dll
 C:\Users\lilia\source\repos\Nail_Salon_MVVM\Nail_Salon_MVVM\bin\Debug\net6.0-windows\Prism.dll
 C:\Users\lilia\source\repos\Nail_Salon_MVVM\Nail_Salon_MVVM\bin\Debug\net6.0-windows\Prism.Wpf.dll
+C:\Users\lilia\source\repos\Nail_Salon_MVVM\Nail_Salon_MVVM\bin\Debug\net6.0-windows\xunit.abstractions.dll
+C:\Users\lilia\source\repos\Nail_Salon_MVVM\Nail_Salon_MVVM\bin\Debug\net6.0-windows\xunit.assert.dll
+C:\Users\lilia\source\repos\Nail_Salon_MVVM\Nail_Salon_MVVM\bin\Debug\net6.0-windows\xunit.core.dll
+C:\Users\lilia\source\repos\Nail_Salon_MVVM\Nail_Salon_MVVM\bin\Debug\net6.0-windows\xunit.execution.dotnet.dll

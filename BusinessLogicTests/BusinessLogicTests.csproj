@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Устанавливаем целевую версию .NET Framework -->
+    <TargetFramework>net6.0</TargetFramework>
+    <!-- Включаем неявные using -->
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Включаем nullable reference types -->
+    <Nullable>enable</Nullable>
+
+    <!-- Отмечаем проект как непакетный -->
+    <IsPackable>false</IsPackable>
+    <!-- Отмечаем проект как проект тестирования -->
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <!-- ItemGroup для указания зависимостей -->
+  <ItemGroup>
+    <!-- Указываем зависимость на Microsoft.NET.Test.Sdk для поддержки тестирования -->
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+    <!-- Указываем зависимость на xunit для написания и запуска тестов -->
+    <PackageReference Include="xunit" Version="2.8.0" />
+    <!-- Указываем зависимость на xunit.runner.visualstudio для запуска тестов в Visual Studio -->
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.0">
+      <!-- Указываем, какие ассеты включить в сборку -->
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <!-- Отмечаем частные ассеты, которые не следует включать в сборку -->
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <!-- Указываем зависимость на coverlet.collector для сбора данных о покрытии кода тестами -->
+    <PackageReference Include="coverlet.collector" Version="3.2.0">
+      <!-- Указываем, какие ассеты включить в сборку -->
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <!-- Отмечаем частные ассеты, которые не следует включать в сборку -->
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <!-- ItemGroup для указания ссылок на другие проекты в решении -->
+  <ItemGroup>
+    <!-- Указываем ссылку на проект Business_Logic, чтобы использовать его типы и функции в тестах -->
+    <ProjectReference Include="..\Business_Logic\Business_Logic.csproj" />
+  </ItemGroup>
+
+</Project>

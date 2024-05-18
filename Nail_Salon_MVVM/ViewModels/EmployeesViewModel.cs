@@ -11,15 +11,15 @@ namespace Nail_Salon_MVVM
     public class EmployeesViewModel : INotifyPropertyChanged
     {
         private readonly EmployeesReader _employeesReader;
-        private readonly EmployeeReaderDbContext _dbContext;
+        private readonly ReadingDbContext _dbContext;
 
         public EmployeesViewModel(string connectionString)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<EmployeeReaderDbContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<ReadingDbContext>();
             optionsBuilder.UseSqlServer(connectionString);
             var dbContextOptions = optionsBuilder.Options;
 
-            _dbContext = new EmployeeReaderDbContext(dbContextOptions); 
+            _dbContext = new ReadingDbContext(dbContextOptions); 
             _employeesReader = new EmployeesReader(dbContextOptions); 
             EmployeesItems = new ObservableCollection<Employee>();
             GetEmployeesTable();

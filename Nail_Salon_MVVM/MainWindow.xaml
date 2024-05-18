@@ -81,11 +81,11 @@
             <TabItem Header="Расписание" >
                 <DataGrid ItemsSource="{Binding ScheduleViewModel.ScheduleItems}" AutoGenerateColumns="False">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Клиент" Binding="{Binding CustomerFullName}" />
-                        <DataGridTextColumn Header="Услуга" Binding="{Binding ServiceName}" />
+                        <DataGridTextColumn Header="Клиент" Binding="{Binding Customer.CustomerFullName}" />
+                        <DataGridTextColumn Header="Услуга" Binding="{Binding Service.ServiceName}" />
                         <DataGridTextColumn Header="Дата / Время" Binding="{Binding StartDateTime}" />
-                        <DataGridTextColumn Header="Мастер" Binding="{Binding EmployeeName}" />
-                        <DataGridTextColumn Header="Стоимость" Binding="{Binding Price}" />
+                        <DataGridTextColumn Header="Мастер" Binding="{Binding Employee.EmployeeFullName}" />
+                        <DataGridTextColumn Header="Стоимость" Binding="{Binding Service.ServicePrice}" />
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
@@ -94,9 +94,9 @@
                 <Grid>
                     <DataGrid ItemsSource="{Binding EmployeesViewModel.EmployeesItems}" AutoGenerateColumns="False">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Имя" Binding="{Binding FullName}" />
-                            <DataGridTextColumn Header="Специализация" Binding="{Binding TypeService}" />
-                            <DataGridTextColumn Header="Номер телефона" Binding="{Binding PhoneNumber}" />
+                            <DataGridTextColumn Header="Имя" Binding="{Binding EmployeeFullName}" />
+                            <DataGridTextColumn Header="Специализация" Binding="{Binding EmployeeTypeService}" />
+                            <DataGridTextColumn Header="Номер телефона" Binding="{Binding EmployeePhoneNumber}" />
                             <DataGridTextColumn Header="Процедуры за месяц" Binding="{Binding Score}" />
                         </DataGrid.Columns>
                     </DataGrid>

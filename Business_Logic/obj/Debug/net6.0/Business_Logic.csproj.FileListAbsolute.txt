@@ -22,3 +22,5 @@ C:\Users\lilia\source\repos\Nail_Salon_MVVM\Business_Logic\obj\Debug\net6.0\Busi
 C:\Users\lilia\source\repos\Nail_Salon_MVVM\Business_Logic\obj\Debug\net6.0\refint\Business_Logic.dll
 C:\Users\lilia\source\repos\Nail_Salon_MVVM\Business_Logic\obj\Debug\net6.0\Business_Logic.pdb
 C:\Users\lilia\source\repos\Nail_Salon_MVVM\Business_Logic\obj\Debug\net6.0\ref\Business_Logic.dll
+C:\Users\lilia\source\repos\Nail_Salon_MVVM\Business_Logic\bin\Debug\net6.0\Business_Logic.runtimeconfig.json
+C:\Users\lilia\source\repos\Nail_Salon_MVVM\Business_Logic\obj\Debug\net6.0\Business_Logic.genruntimeconfig.cache

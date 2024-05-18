@@ -1,15 +1,16 @@
 ﻿using Business_Logic;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace DataAccess
 {
     public class EmployeesReader
     {
-        private readonly EmployeeReaderDbContext _context;
+        private readonly ReadingDbContext _context;
 
-        public EmployeesReader(DbContextOptions<EmployeeReaderDbContext> options)
+        public EmployeesReader(DbContextOptions<ReadingDbContext> options)
         {
-            _context = new EmployeeReaderDbContext(options);
+            _context = new ReadingDbContext(options);
         }
 
         public async Task<List<Employee>> GetAllEmployeesAndCountScore()
@@ -17,19 +18,19 @@ namespace DataAccess
             try
             {
                 var employeesWithScore = await _context.Employees
-                    .OrderByDescending(e => e.Employee_Service
-                        .Where(es => es.DateTime >= DateTime.Now.AddMonths(-2))
-                        .Select(es => new { es.IdService, es.DateTime, es.IdEmployee, es.EndTime })
+                    .OrderByDescending(e => e.EmployeeRecords
+                        .Where(es => es.ServiceDateTime >= DateTime.Now.AddMonths(-2))
+                        .Select(es => new { es.ServiceId, es.ServiceDateTime, es.EmployeeId, es.ServiceEndTime })
                         .Count())
-                    .ThenBy(e => e.FullName)
+                    .ThenBy(e => e.EmployeeFullName)
                     .Select(e => new Employee
                     {
-                        FullName = e.FullName,
-                        TypeService = e.TypeService,
-                        PhoneNumber = e.PhoneNumber,
-                        Score = e.Employee_Service
-                            .Where(es => es.DateTime >= DateTime.Now.AddMonths(-2))
-                            .Select(es => new { es.IdService, es.DateTime, es.IdEmployee, es.EndTime })
+                        EmployeeFullName = e.EmployeeFullName,
+                        EmployeeTypeService = e.EmployeeTypeService,
+                        EmployeePhoneNumber = e.EmployeePhoneNumber,
+                        Score = e.EmployeeRecords
+                            .Where(es => es.ServiceDateTime >= DateTime.Now.AddMonths(-2))
+                            .Select(es => new { es.ServiceId, es.ServiceDateTime, es.EmployeeId, es.ServiceEndTime })
                             .Count()
                     })
                     .ToListAsync();
@@ -48,16 +49,16 @@ namespace DataAccess
             try
             {
                 return await _context.Employees
-                    .Where(e => e.TypeService == serviceType)
+                    .Where(e => e.EmployeeTypeService == serviceType)
                     .Select(e => new Employee
                     {
                         Id = e.Id,
-                        FullName = e.FullName,
-                        TypeService = e.TypeService,
+                        EmployeeFullName = e.EmployeeFullName,
+                        EmployeeTypeService = e.EmployeeTypeService,
                         EmploymentContractNumber = e.EmploymentContractNumber,
-                        BirthDate = e.BirthDate,
-                        PermanentEmployee = e.PermanentEmployee,
-                        PhoneNumber = e.PhoneNumber
+                        EmployeeBirthDate = e.EmployeeBirthDate,
+                        PermanentEmployeeStatus = e.PermanentEmployeeStatus,
+                        EmployeePhoneNumber = e.EmployeePhoneNumber
                     })
                     .ToListAsync();
             }
@@ -67,13 +68,5 @@ namespace DataAccess
                 throw;
             }
         }
-    }
-
-    public class EmployeeReaderDbContext : DbContext
-    {
-        public DbSet<Employee> Employees { get; set; }
-        public DbSet<Employee_Service> Employee_Service { get; set; }
-
-        public EmployeeReaderDbContext(DbContextOptions<EmployeeReaderDbContext> options) : base(options) { }
     }
 }

@@ -5,11 +5,11 @@ namespace DataAccess
 {
     public class ServiceReader
     {
-        private readonly ServiceReaderDbContext _context;
+        private readonly ReadingDbContext _context;
 
-        public ServiceReader(DbContextOptions<ServiceReaderDbContext> options)
+        public ServiceReader(DbContextOptions<ReadingDbContext> options)
         {
-            _context = new ServiceReaderDbContext(options);
+            _context = new ReadingDbContext(options);
         }
 
         public async Task<List<Service>> GetAllServices()
@@ -25,12 +25,5 @@ namespace DataAccess
                 throw;
             }
         }
-    }
-
-    public class ServiceReaderDbContext : DbContext
-    {
-        public DbSet<Service> Services { get; set; }
-
-        public ServiceReaderDbContext(DbContextOptions<ServiceReaderDbContext> options) : base(options) { }
     }
 }

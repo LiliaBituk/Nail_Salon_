@@ -83,12 +83,12 @@
         <TextBox Grid.Row="5" Text="{Binding CustomerPhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,5,10,10"/>
 
         <ComboBox Grid.Row="6" Name="ServiceComboBox" ItemsSource="{Binding AvailableServices}" 
-          DisplayMemberPath="Name" 
-          SelectedItem="{Binding SelectedService, Mode=TwoWay}"
+          DisplayMemberPath="ServiceName" 
+          SelectedItem="{Binding SelectedService}"
           Margin="10,10,10,10"/>
 
         <ComboBox Grid.Row="7" x:Name="EmployeeComboBox" ItemsSource="{Binding AvailableEmployees}" 
-          DisplayMemberPath="FullName" 
+          DisplayMemberPath="EmployeeFullName" 
           SelectedItem="{Binding SelectedEmployee, Mode=TwoWay}"
           Margin="10,10,10,10"/>
 

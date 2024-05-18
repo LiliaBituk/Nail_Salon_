@@ -30,7 +30,7 @@ namespace Nail_Salon_MVVM
 
                 if (value != null)
                 {
-                    LoadEmployeesByServiceType(value.Type);
+                    LoadEmployeesByServiceType(value.ServiceType);
                 }
             }
         }
@@ -143,7 +143,7 @@ namespace Nail_Salon_MVVM
             AvailableServices = new ObservableCollection<Service>();
             AvailableEmployees = new ObservableCollection<Employee>();
 
-            var optionsBuilder = new DbContextOptionsBuilder<ServiceReaderDbContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<ReadingDbContext>();
             optionsBuilder.UseSqlServer(_connectionString);
 
             var reader = new ServiceReader(optionsBuilder.Options);
@@ -161,7 +161,7 @@ namespace Nail_Salon_MVVM
         {
             if (serviceType != null)
             {
-                var optionsBuilder = new DbContextOptionsBuilder<EmployeeReaderDbContext>();
+                var optionsBuilder = new DbContextOptionsBuilder<ReadingDbContext>();
                 optionsBuilder.UseSqlServer(_connectionString);
 
                 var employeesReader = new EmployeesReader(optionsBuilder.Options);
@@ -191,7 +191,7 @@ namespace Nail_Salon_MVVM
             SelectedEmployee = selectedEmployee;
         }
 
-        private async void Button_Record_Click()
+        private void Button_Record_Click()
         {
             string fullName = CustomerFullName;
             DateTime birthDate = CustomerBirthDate;
@@ -199,7 +199,7 @@ namespace Nail_Salon_MVVM
             DateOnly appointmentDate = SelectedDate;
             TimeSpan appointmentTime = SelectedTime;
 
-            Customer client = new Customer { FullName = fullName, BirthDate = birthDate, PhoneNumber = phoneNumber };
+            Customer client = new Customer { CustomerFullName = fullName, CustomerBirthDate = birthDate, CustomerPhoneNumber = phoneNumber };
 
             Service selectedService = SelectedService;
             Employee selectedEmployee = SelectedEmployee;
@@ -209,19 +209,19 @@ namespace Nail_Salon_MVVM
                 DateTime appointmentDateTime = new DateTime(appointmentDate.Year, appointmentDate.Month, appointmentDate.Day,
                                             appointmentTime.Hours, appointmentTime.Minutes, appointmentTime.Seconds);
 
-                ClientWriter clientRecord = new ClientWriter(_connectionString, client, selectedService, selectedEmployee, appointmentDateTime, selectedService.ExecutionTime);
+                CustomerWriter clientRecord = new CustomerWriter(_connectionString, client, selectedService, selectedEmployee, appointmentDateTime, selectedService.ServiceExecutionTime);
 
-                using (ClientRecordDbContext context = new ClientRecordDbContext(_connectionString))
+                using (WritingDbContext context = new WritingDbContext(_connectionString))
                 {
-                    await clientRecord.GetClientRecording();
+                    clientRecord.GetClientRecording();
                     if (!clientRecord.RecordingIsSucsessfull)
                     {
-                        string notificationText = $"{selectedEmployee.FullName} занят в это время";
+                        string notificationText = $"{selectedEmployee.EmployeeFullName} занят в это время";
                         ShowNotification(notificationText);
                     }
                     else
                     {
-                        string notificationText = $"{fullName} записан(а) {appointmentDate} {SelectedTime} на {selectedService.Name} к {selectedEmployee.FullName}";
+                        string notificationText = $"{fullName} записан(а) {appointmentDate} {SelectedTime} на {selectedService.ServiceName} к {selectedEmployee.EmployeeFullName}";
                         ShowNotification(notificationText);
                     }
                 }

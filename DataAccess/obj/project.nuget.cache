@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "V1bQrWq5GnRqEWGkXdDNcxBFBAFqd7qgwrpGoITVovF6S6ruyBkdLy2tejQPuZJIAnxIf7pE4v0S1kPXOM+zTg==",
+  "dgSpecHash": "94YRyY9QXSVkKrR+hwMj0KK5KWStZ3U2jlor9yRWvJuNUEXydMqE6MyiqqC/ZfJW8NthFjw7GBPD7azFnS11yA==",
   "success": true,
   "projectFilePath": "C:\\Users\\lilia\\source\\repos\\Nail_Salon_MVVM\\DataAccess\\DataAccess.csproj",
   "expectedPackageFiles": [
@@ -67,7 +67,14 @@
     "C:\\Users\\lilia\\.nuget\\packages\\system.text.encodings.web\\4.7.2\\system.text.encodings.web.4.7.2.nupkg.sha512",
     "C:\\Users\\lilia\\.nuget\\packages\\system.text.json\\4.7.2\\system.text.json.4.7.2.nupkg.sha512",
     "C:\\Users\\lilia\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512",
-    "C:\\Users\\lilia\\.nuget\\packages\\system.windows.extensions\\6.0.0\\system.windows.extensions.6.0.0.nupkg.sha512"
+    "C:\\Users\\lilia\\.nuget\\packages\\system.windows.extensions\\6.0.0\\system.windows.extensions.6.0.0.nupkg.sha512",
+    "C:\\Users\\lilia\\.nuget\\packages\\xunit\\2.8.0\\xunit.2.8.0.nupkg.sha512",
+    "C:\\Users\\lilia\\.nuget\\packages\\xunit.abstractions\\2.0.3\\xunit.abstractions.2.0.3.nupkg.sha512",
+    "C:\\Users\\lilia\\.nuget\\packages\\xunit.analyzers\\1.13.0\\xunit.analyzers.1.13.0.nupkg.sha512",
+    "C:\\Users\\lilia\\.nuget\\packages\\xunit.assert\\2.8.0\\xunit.assert.2.8.0.nupkg.sha512",
+    "C:\\Users\\lilia\\.nuget\\packages\\xunit.core\\2.8.0\\xunit.core.2.8.0.nupkg.sha512",
+    "C:\\Users\\lilia\\.nuget\\packages\\xunit.extensibility.core\\2.8.0\\xunit.extensibility.core.2.8.0.nupkg.sha512",
+    "C:\\Users\\lilia\\.nuget\\packages\\xunit.extensibility.execution\\2.8.0\\xunit.extensibility.execution.2.8.0.nupkg.sha512"
   ],
   "logs": []
 }

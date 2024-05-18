@@ -51,12 +51,12 @@ namespace Nail_Salon_MVVM
         {
             try
             {
-                var optionsBuilder = new DbContextOptionsBuilder<ScheduleReaderDbContext>();
-                optionsBuilder.UseSqlServer(connectionString);
-                var dbContextOptions = optionsBuilder.Options;
+                //var optionsBuilder = new DbContextOptionsBuilder<ReadingDbContext>();
+                //optionsBuilder.UseSqlServer(connectionString);
+                //var dbContextOptions = optionsBuilder.Options;
 
-                ScheduleReader reader = new ScheduleReader(dbContextOptions);
-                List<Schedule> listScheduleitems = await reader.GetSchedule(selectedDate);
+                ScheduleReader reader = new ScheduleReader(connectionString);
+                List<Schedule> listScheduleitems = reader.GetSchedule(selectedDate);
 
                 ScheduleItems.Clear();
 

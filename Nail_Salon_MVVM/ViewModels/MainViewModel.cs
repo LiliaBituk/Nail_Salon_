@@ -43,7 +43,6 @@ namespace Nail_Salon_MVVM
             });
         }
 
-
         private void ScheduleUpdateCommand()
         {
             UpdateScheduleData();
