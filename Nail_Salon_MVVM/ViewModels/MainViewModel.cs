@@ -5,6 +5,8 @@ using System.Windows.Input;
 using System.Windows;
 using Prism.Commands;
 using System.Windows.Controls;
+using DataAccess;
+using Microsoft.EntityFrameworkCore;
 
 namespace Nail_Salon_MVVM
 {
@@ -13,21 +15,28 @@ namespace Nail_Salon_MVVM
         private readonly string _connectionString;
         private readonly DatePicker _datePicker;
 
-        public ICommand RecordClientCommand { get; private set; }
-        public ICommand UpdateScheduleCommand { get; private set; }
-        public ICommand DatePickerSelectedDateChangedCommand { get; }
+        public ICommand _recordClientCommand { get; private set; }
+        public ICommand _updateScheduleCommand { get; private set; }
+        public ICommand _datePickerSelectedDateChangedCommand { get; }
+
+        public IRepositoryFactory _repositoryFactory;
 
         public MainViewModel(string connectionString, DatePicker ScheduleDatePicker)
         {
             _datePicker = ScheduleDatePicker;
             _connectionString = connectionString;
 
-            RecordClientCommand = new DelegateCommand(OpenClientRecordingWindowAsync);
-            UpdateScheduleCommand = new DelegateCommand(ScheduleUpdateCommand);
-            DatePickerSelectedDateChangedCommand = new DelegateCommand(ScheduleDatePicker_SelectedDateChanged);
+            _recordClientCommand = new DelegateCommand(OpenClientRecordingWindowAsync);
+            _updateScheduleCommand = new DelegateCommand(UpdateScheduleCommand);
+            _datePickerSelectedDateChangedCommand = new DelegateCommand(ScheduleDatePicker_SelectedDateChanged);
 
-            ScheduleViewModel = new ScheduleItemViewModel(connectionString);
-            EmployeesViewModel = new EmployeesViewModel(connectionString);
+            var optionsBuilder = new DbContextOptionsBuilder<ReadingDbContext>();
+            optionsBuilder.UseSqlServer(connectionString);
+
+            _repositoryFactory = new RepositoryFactory(optionsBuilder.Options, connectionString);
+
+            ScheduleViewModel = new ScheduleItemViewModel(_repositoryFactory);
+            EmployeesViewModel = new EmployeesViewModel(_repositoryFactory);
             SelectedDate = DateTime.Now;
         }
 
@@ -37,13 +46,13 @@ namespace Nail_Salon_MVVM
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    ClientRecordingWindow selectServiceWindow = new ClientRecordingWindow(_connectionString);
+                    ClientRecordingWindow selectServiceWindow = new ClientRecordingWindow(_connectionString, _repositoryFactory);
                     selectServiceWindow.ShowDialog();
                 });
             });
         }
 
-        private void ScheduleUpdateCommand()
+        private void UpdateScheduleCommand()
         {
             UpdateScheduleData();
             UpdateEmployeeTable();
@@ -62,7 +71,7 @@ namespace Nail_Salon_MVVM
                 {
                     DateTime selectedDate = (DateTime)_datePicker.SelectedDate;
                     viewModel.SelectedDate = selectedDate;
-                    viewModel.ScheduleViewModel.LoadScheduleItems(selectedDate, _connectionString);
+                    viewModel.ScheduleViewModel.LoadScheduleItems(selectedDate);
                 }
             });
         }

@@ -14,7 +14,7 @@ namespace Nail_Salon_MVVM
 
             ScheduleDatePicker.SelectedDateChanged += (sender, e) =>
             {
-                viewModel.DatePickerSelectedDateChangedCommand.Execute(null);
+                viewModel._datePickerSelectedDateChangedCommand.Execute(null);
             };
         }
     }

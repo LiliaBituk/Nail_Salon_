@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace DataAccess
 {
-    public class EmployeesReader
+    public class EmployeesReader : IEmployeeRepository
     {
         private readonly ReadingDbContext _context;
 

@@ -1,21 +1,19 @@
 ﻿using Business_Logic;
-using Microsoft.EntityFrameworkCore;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace DataAccess
 {
-    public class ScheduleReader
+    public class ScheduleReader : IScheduleRepository
     {
-        //private readonly ReadingDbContext _context;
         private readonly string _connectionString;
 
-        public ScheduleReader(string connectionString)  //(DbContextOptions<ReadingDbContext> options, string connectionString)
+        public ScheduleReader(string connectionString)
         {
-            //_context = new ReadingDbContext(options);
             _connectionString = connectionString;
         }
 
-        public List<Schedule> GetSchedule(DateTime selectedDate)
+        public async Task<List<Schedule>> GetSchedule(DateTime selectedDate)
         {
             List<Schedule> schedule = new List<Schedule>();
 
@@ -23,40 +21,16 @@ namespace DataAccess
             {
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
-                    connection.Open();
+                    connection.OpenAsync();
 
-                    string query = @"
-                        SELECT 
-                            c.id AS CustomerId,
-                            c.fullName AS ClientName,
-                            s.id AS ServiceId,
-                            s.name AS ServiceName,
-                            cs.dateTime AS StartDateTime,
-                            e.id AS EmployeeId,
-                            e.fullName AS EmployeeName,
-                            s.price AS ServicePrice
-                        FROM 
-                            Client_Service cs
-                        JOIN 
-                            Customers c ON cs.CustomerId = c.id
-                        JOIN 
-                            Services s ON cs.ServiceId = s.id
-                        JOIN 
-                            Employee_Service es ON cs.ServiceId = es.ServiceId AND cs.dateTime = es.dateTime
-                        JOIN 
-                            Employees e ON es.EmployeeId = e.id
-                        WHERE 
-                            CAST(cs.dateTime AS DATE) = @SelectedDate
-                        ORDER BY 
-                            cs.dateTime;";
+                    SqlCommand command = new SqlCommand("GetScheduleByDate", connection);
+                    command.CommandType = CommandType.StoredProcedure;
 
-
-                    SqlCommand command = new SqlCommand(query, connection);
                     command.Parameters.AddWithValue("@SelectedDate", selectedDate.Date);
 
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
-                        while (reader.Read())
+                        while (await reader.ReadAsync())
                         {
                             Customer customer = new Customer
                             {

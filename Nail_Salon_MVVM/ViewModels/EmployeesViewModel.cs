@@ -10,17 +10,14 @@ namespace Nail_Salon_MVVM
 {
     public class EmployeesViewModel : INotifyPropertyChanged
     {
-        private readonly EmployeesReader _employeesReader;
-        private readonly ReadingDbContext _dbContext;
+        private readonly IRepositoryFactory _repositoryFactory;
+        private readonly IEmployeeRepository reader;
 
-        public EmployeesViewModel(string connectionString)
+        public EmployeesViewModel(IRepositoryFactory repositoryFactory)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<ReadingDbContext>();
-            optionsBuilder.UseSqlServer(connectionString);
-            var dbContextOptions = optionsBuilder.Options;
+            _repositoryFactory = repositoryFactory;
+            reader = _repositoryFactory.CreateEmployeeRepository();
 
-            _dbContext = new ReadingDbContext(dbContextOptions); 
-            _employeesReader = new EmployeesReader(dbContextOptions); 
             EmployeesItems = new ObservableCollection<Employee>();
             GetEmployeesTable();
         }
@@ -49,7 +46,7 @@ namespace Nail_Salon_MVVM
         {
             try
             {
-                List<Employee> listEmployeesItems = await _employeesReader.GetAllEmployeesAndCountScore();
+                List<Employee> listEmployeesItems = await reader.GetAllEmployeesAndCountScore();
 
                 EmployeesItems.Clear();
                 foreach (Employee item in listEmployeesItems)

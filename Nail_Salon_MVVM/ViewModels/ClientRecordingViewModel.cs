@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -112,6 +111,9 @@ namespace Nail_Salon_MVVM
             }
         }
 
+        private readonly IRepositoryFactory _repositoryFactory;
+        private readonly IServiceRepository _serviceRepository;
+
         private readonly string _connectionString;
 
         public ICommand ServiceComboBoxSelectionChangedCommand { get; }
@@ -122,13 +124,16 @@ namespace Nail_Salon_MVVM
         public ComboBox _employeesComboBox;
         public ComboBox _timeComboBox;
 
-        public ClientRecordingViewModel(string connectionString, ComboBox ServiceComboBox, ComboBox EmployeeComboBox, ComboBox TimeComboBox)
+        public ClientRecordingViewModel(string connectionString, IRepositoryFactory repositoryFactory, ComboBox ServiceComboBox, ComboBox EmployeeComboBox, ComboBox TimeComboBox)
         {
+            _connectionString = connectionString;
+
+            _repositoryFactory = repositoryFactory;
+            _serviceRepository = _repositoryFactory.CreateServiceRepository();
+
             _servicesComboBox = ServiceComboBox;
             _employeesComboBox = EmployeeComboBox;
             _timeComboBox = TimeComboBox;
-
-            _connectionString = connectionString;
 
             ServiceComboBoxSelectionChangedCommand = new DelegateCommand(Service_ComboBox_SelectionChanged);
             EmployeeComboBoxSelectionChangedCommand = new DelegateCommand(Employee_ComboBox_SelectionChanged);
@@ -143,11 +148,7 @@ namespace Nail_Salon_MVVM
             AvailableServices = new ObservableCollection<Service>();
             AvailableEmployees = new ObservableCollection<Employee>();
 
-            var optionsBuilder = new DbContextOptionsBuilder<ReadingDbContext>();
-            optionsBuilder.UseSqlServer(_connectionString);
-
-            var reader = new ServiceReader(optionsBuilder.Options);
-            List<Service> services = await reader.GetAllServices();
+            List<Service> services = await _serviceRepository.GetAllServices();
 
             AvailableServices.Clear();
 
@@ -161,10 +162,7 @@ namespace Nail_Salon_MVVM
         {
             if (serviceType != null)
             {
-                var optionsBuilder = new DbContextOptionsBuilder<ReadingDbContext>();
-                optionsBuilder.UseSqlServer(_connectionString);
-
-                var employeesReader = new EmployeesReader(optionsBuilder.Options);
+                IEmployeeRepository employeesReader = _repositoryFactory.CreateEmployeeRepository();
                 List<Employee> employees = await employeesReader.GetEmployeesByServiceType(serviceType);
 
                 AvailableEmployees.Clear();
@@ -179,7 +177,6 @@ namespace Nail_Salon_MVVM
         private void Service_ComboBox_SelectionChanged()
         {
             var selectedService = _servicesComboBox.SelectedItem as Service;
-
             SelectedService = selectedService;
         }
 
@@ -187,7 +184,6 @@ namespace Nail_Salon_MVVM
         private void Employee_ComboBox_SelectionChanged()
         {
             var selectedEmployee = _employeesComboBox.SelectedItem as Employee;
-
             SelectedEmployee = selectedEmployee;
         }
 
@@ -209,12 +205,11 @@ namespace Nail_Salon_MVVM
                 DateTime appointmentDateTime = new DateTime(appointmentDate.Year, appointmentDate.Month, appointmentDate.Day,
                                             appointmentTime.Hours, appointmentTime.Minutes, appointmentTime.Seconds);
 
-                CustomerWriter clientRecord = new CustomerWriter(_connectionString, client, selectedService, selectedEmployee, appointmentDateTime, selectedService.ServiceExecutionTime);
-
+                ICustomerRepository clientRecord = _repositoryFactory.CreateCustomerRepository(client, selectedService, selectedEmployee, appointmentDateTime, selectedService.ServiceExecutionTime);
                 using (WritingDbContext context = new WritingDbContext(_connectionString))
                 {
-                    clientRecord.GetClientRecording();
-                    if (!clientRecord.RecordingIsSucsessfull)
+                    clientRecord.RecordCustomerAsync();
+                    if (!clientRecord.IsRecordingSuccessful)
                     {
                         string notificationText = $"{selectedEmployee.EmployeeFullName} занят в это время";
                         ShowNotification(notificationText);

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess
 {
-    public class ServiceReader
+    public class ServiceReader : IServiceRepository
     {
         private readonly ReadingDbContext _context;
 

@@ -1,8 +1,4 @@
-﻿
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Business_Logic
+﻿namespace Business_Logic
 {
     public class Schedule 
     {

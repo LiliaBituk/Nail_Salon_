@@ -1,6 +1,5 @@
 ﻿using Business_Logic;
 using DataAccess;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,11 +9,15 @@ namespace Nail_Salon_MVVM
 {
     public class ScheduleItemViewModel : INotifyPropertyChanged
     {
-        public ScheduleItemViewModel(string connectionString)
+        IRepositoryFactory _repositoryFactory;
+
+        public ScheduleItemViewModel(IRepositoryFactory repositoryFactory)
         {
+            _repositoryFactory = repositoryFactory;
+
             ScheduleItems = new ObservableCollection<Schedule>();
             SelectedDate = DateTime.Now;
-            LoadScheduleItems(SelectedDate, connectionString);
+            LoadScheduleItems(SelectedDate);
         }
 
         private ObservableCollection<Schedule> _scheduleItems;
@@ -47,16 +50,12 @@ namespace Nail_Salon_MVVM
             }
         }
 
-        public async void LoadScheduleItems(DateTime selectedDate, string connectionString)
+        public async void LoadScheduleItems(DateTime selectedDate)
         {
             try
             {
-                //var optionsBuilder = new DbContextOptionsBuilder<ReadingDbContext>();
-                //optionsBuilder.UseSqlServer(connectionString);
-                //var dbContextOptions = optionsBuilder.Options;
-
-                ScheduleReader reader = new ScheduleReader(connectionString);
-                List<Schedule> listScheduleitems = reader.GetSchedule(selectedDate);
+                IScheduleRepository reader =  _repositoryFactory.CreateScheduleRepository();
+                List<Schedule> listScheduleitems = await reader.GetSchedule(selectedDate);
 
                 ScheduleItems.Clear();
 

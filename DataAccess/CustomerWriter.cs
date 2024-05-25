@@ -4,7 +4,7 @@ using System.Data.Entity.Core;
 
 namespace DataAccess
 {
-    public class CustomerWriter
+    public class CustomerWriter : ICustomerRepository
     {
         private readonly string _connectionsString;
         private readonly Customer _customer;
@@ -15,7 +15,7 @@ namespace DataAccess
 
         private Customer _existingCustomer = null;
 
-        public bool RecordingIsSucsessfull = true;
+        public bool IsRecordingSuccessful { get; private set; }
 
         public CustomerWriter(string connectionsString, Customer customer, Service service, Employee employee, DateTime appointmentDateTime, TimeSpan executionTime)
         {
@@ -27,15 +27,15 @@ namespace DataAccess
             _executionTime = executionTime;
         }
 
-        public bool GetClientRecording()
+        public async Task<bool> RecordCustomerAsync()
         {
             try
             {
                 using (WritingDbContext context = new WritingDbContext(_connectionsString))
                 {
-                    GetExistingCustomer(context);
-                    CreateOrUpdateCustomer(context);
-                    MasterIsAvailable(context);
+                    GetExistingCustomerAsync(context);
+                    CreateOrUpdateCustomerAsync(context);
+                    EnsureMasterIsAvailableAsync(context);
 
                     TimeSpan _endTime = _appointmentDateTime.TimeOfDay + _executionTime;
 
@@ -45,24 +45,26 @@ namespace DataAccess
                     EmployeeRecords employeeService = new EmployeeRecords { EmployeeId = _employee.Id, ServiceId = _service.Id, ServiceDateTime = _appointmentDateTime, ServiceEndTime = _endTime };
                     context.Employee_Service.Add(employeeService);
 
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
 
+                    IsRecordingSuccessful = true;
                     return true;
                 }
             }
             catch (EntityCommandExecutionException ex)
             {
                 Console.WriteLine(ex.Message);
+                IsRecordingSuccessful = false;
                 return false;
             }
         }
 
-        private void GetExistingCustomer(WritingDbContext context)
+        private void GetExistingCustomerAsync(WritingDbContext context)
         {
             _existingCustomer = context.Customers.FirstOrDefault(c => c.CustomerFullName == _customer.CustomerFullName && c.CustomerBirthDate == _customer.CustomerBirthDate);
         }
 
-        private void CreateOrUpdateCustomer(WritingDbContext context)
+        private void CreateOrUpdateCustomerAsync(WritingDbContext context)
         { 
             if (_existingCustomer == null)
             {
@@ -79,7 +81,7 @@ namespace DataAccess
             context.SaveChanges();
         }
 
-        private void MasterIsAvailable(WritingDbContext context)
+        private void EnsureMasterIsAvailableAsync(WritingDbContext context)
         {
             var employeeRecords = context.Employee_Service
                                    .Where(es => es.EmployeeId == _employee.Id && DbFunctions.TruncateTime(es.ServiceDateTime) == _appointmentDateTime.Date)
@@ -88,7 +90,12 @@ namespace DataAccess
 
             if (isMasterBusy)
             {
-                RecordingIsSucsessfull = false;
+                IsRecordingSuccessful = false;
+                throw new InvalidOperationException("Мастер не доступен в выбранное время.");
+            }
+            else
+            {
+                IsRecordingSuccessful = true;
             }
         }
     }
