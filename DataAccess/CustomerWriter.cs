@@ -7,95 +7,78 @@ namespace DataAccess
     public class CustomerWriter : ICustomerRepository
     {
         private readonly string _connectionsString;
-        private readonly Customer _customer;
-        private readonly Service _service;
-        private readonly Employee _employee;
-        private readonly DateTime _appointmentDateTime;
-        private readonly TimeSpan _executionTime;
 
-        private Customer _existingCustomer = null;
-
-        public bool IsRecordingSuccessful { get; private set; }
-
-        public CustomerWriter(string connectionsString, Customer customer, Service service, Employee employee, DateTime appointmentDateTime, TimeSpan executionTime)
+        public CustomerWriter(string connectionsString)
         {
             _connectionsString = connectionsString;
-            _customer = customer;
-            _service = service;
-            _employee = employee;
-            _appointmentDateTime = appointmentDateTime;
-            _executionTime = executionTime;
         }
 
-        public async Task<bool> RecordCustomerAsync()
+        public async Task RecordCustomerAsync(Customer customer, Service service, Employee employee, DateTime appointmentDateTime, TimeSpan endTime)
         {
             try
             {
                 using (WritingDbContext context = new WritingDbContext(_connectionsString))
                 {
-                    GetExistingCustomerAsync(context);
-                    CreateOrUpdateCustomerAsync(context);
-                    EnsureMasterIsAvailableAsync(context);
+                    CustomerRecords clientAndService = new CustomerRecords { CustomerId = customer.Id, ServiceId = service.Id, ServiceDateTime = appointmentDateTime, ServiceEndTime = endTime };
+                    context.Client_Service.Add(clientAndService);
 
-                    TimeSpan _endTime = _appointmentDateTime.TimeOfDay + _executionTime;
+                    EmployeeRecords employeeAndService = new EmployeeRecords { EmployeeId = employee.Id, ServiceId = service.Id, ServiceDateTime = appointmentDateTime, ServiceEndTime = endTime };
+                    context.Employee_Service.Add(employeeAndService);
 
-                    CustomerRecords clientService = new CustomerRecords { CustomerId = _customer.Id, ServiceId = _service.Id, ServiceDateTime = _appointmentDateTime, ServiceEndTime = _endTime };
-                    context.Client_Service.Add(clientService);
-
-                    EmployeeRecords employeeService = new EmployeeRecords { EmployeeId = _employee.Id, ServiceId = _service.Id, ServiceDateTime = _appointmentDateTime, ServiceEndTime = _endTime };
-                    context.Employee_Service.Add(employeeService);
+                    context.Client_Service.Add(clientAndService);
+                    context.Employee_Service.Add(employeeAndService);
 
                     await context.SaveChangesAsync();
+                }
+            }
+            catch (EntityCommandExecutionException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
 
-                    IsRecordingSuccessful = true;
+        public bool AddOrUpdateCustomer(Customer customer)
+        {
+            try
+            {
+                using (WritingDbContext context = new WritingDbContext(_connectionsString))
+                {
+                    var existingCustomer = context.Customers
+                        .FirstOrDefault(c => c.CustomerFullName == customer.CustomerFullName && c.CustomerBirthDate == customer.CustomerBirthDate);
+
+                    if (existingCustomer == null)
+                    {
+                        customer.CustomerIsNew = true;
+                        context.Customers.Add(customer);
+                    }
+                    else
+                    {
+                        existingCustomer.CustomerIsNew = false;
+                        customer.Id = existingCustomer.Id;
+                        context.Entry(existingCustomer).State = EntityState.Modified;
+                    }
+
+                    context.SaveChanges();
                     return true;
                 }
             }
             catch (EntityCommandExecutionException ex)
             {
                 Console.WriteLine(ex.Message);
-                IsRecordingSuccessful = false;
                 return false;
             }
         }
 
-        private void GetExistingCustomerAsync(WritingDbContext context)
+        public bool IsEmployeeAvailable(int employeeId, DateTime appointmentDateTime)
         {
-            _existingCustomer = context.Customers.FirstOrDefault(c => c.CustomerFullName == _customer.CustomerFullName && c.CustomerBirthDate == _customer.CustomerBirthDate);
-        }
-
-        private void CreateOrUpdateCustomerAsync(WritingDbContext context)
-        { 
-            if (_existingCustomer == null)
+            using (WritingDbContext context = new WritingDbContext(_connectionsString))
             {
-                _customer.CustomerIsNew = true;
-                context.Customers.Add(_customer);
-            }
-            else
-            {
-                _existingCustomer.CustomerIsNew = false;
-                _customer.Id = _existingCustomer.Id;
-                context.Entry(_existingCustomer).State = EntityState.Modified;
-            }
-
-            context.SaveChanges();
-        }
-
-        private void EnsureMasterIsAvailableAsync(WritingDbContext context)
-        {
-            var employeeRecords = context.Employee_Service
-                                   .Where(es => es.EmployeeId == _employee.Id && DbFunctions.TruncateTime(es.ServiceDateTime) == _appointmentDateTime.Date)
+                var employeeRecords = context.Employee_Service
+                                   .Where(es => es.EmployeeId == employeeId && DbFunctions.TruncateTime(es.ServiceDateTime) == appointmentDateTime.Date)
                                    .ToList();
-            bool isMasterBusy = employeeRecords.Any(es => es.ServiceDateTime <= _appointmentDateTime && es.ServiceEndTime >= _appointmentDateTime.TimeOfDay);
-
-            if (isMasterBusy)
-            {
-                IsRecordingSuccessful = false;
-                throw new InvalidOperationException("Мастер не доступен в выбранное время.");
-            }
-            else
-            {
-                IsRecordingSuccessful = true;
+               
+                bool isEmployeeAvailable = !employeeRecords.Any(es => es.ServiceDateTime <= appointmentDateTime && es.ServiceEndTime >= appointmentDateTime.TimeOfDay);
+                return isEmployeeAvailable;
             }
         }
     }

@@ -26,7 +26,7 @@ namespace DataAccess
 
         public ICustomerRepository CreateCustomerRepository(Customer customer, Service service, Employee employee, DateTime appointmentDateTime, TimeSpan executionTime)
         {
-            return new CustomerWriter(_connectionString, customer, service, employee, appointmentDateTime, executionTime);
+            return new CustomerWriter(_connectionString); //, customer, service, employee, appointmentDateTime, executionTime);
         }
 
         public IScheduleRepository CreateScheduleRepository()

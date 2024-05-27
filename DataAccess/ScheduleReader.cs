@@ -64,6 +64,8 @@ namespace DataAccess
                         }
                     }
                 }
+
+                schedule = schedule.OrderBy(s => s.StartDateTime).ToList();
             }
             catch (Exception ex)
             {

@@ -7,10 +7,10 @@ namespace Nail_Salon_MVVM
     {
         public ClientRecordingViewModel ViewModel { get; set; }
 
-        public ClientRecordingWindow(string connectionString, IRepositoryFactory repositoryFactory)
+        public ClientRecordingWindow(IRepositoryFactory repositoryFactory)
         {
             InitializeComponent();
-            ViewModel = new ClientRecordingViewModel(connectionString, repositoryFactory, ServiceComboBox, EmployeeComboBox, TimeComboBox);
+            ViewModel = new ClientRecordingViewModel(repositoryFactory);
             DataContext = ViewModel;
         }
     }

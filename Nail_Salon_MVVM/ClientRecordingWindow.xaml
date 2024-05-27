@@ -105,6 +105,7 @@
 
 
         <ComboBox Name="TimeComboBox"  
+                  ItemsSource="{Binding TimeSlots}"
                   Grid.Row="10" 
                   SelectedValue="{Binding SelectedTime, Mode=TwoWay}" 
                   SelectedValuePath="Content"

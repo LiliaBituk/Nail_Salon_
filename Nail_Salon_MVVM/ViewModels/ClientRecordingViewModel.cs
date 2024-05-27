@@ -1,6 +1,5 @@
 ﻿using Business_Logic;
 using DataAccess;
-using Microsoft.EntityFrameworkCore;
 using Prism.Commands;
 using System;
 using System.Collections.Generic;
@@ -111,29 +110,28 @@ namespace Nail_Salon_MVVM
             }
         }
 
+        private ObservableCollection<string> _timeSlots;
+        public ObservableCollection<string> TimeSlots
+        {
+            get { return _timeSlots; }
+            set
+            {
+                _timeSlots = value;
+                OnPropertyChanged(nameof(TimeSlots));
+            }
+        }
+
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly IServiceRepository _serviceRepository;
-
-        private readonly string _connectionString;
 
         public ICommand ServiceComboBoxSelectionChangedCommand { get; }
         public ICommand EmployeeComboBoxSelectionChangedCommand { get; }
         public ICommand ButtonCustomerWritingCommand { get; }
 
-        public ComboBox _servicesComboBox;
-        public ComboBox _employeesComboBox;
-        public ComboBox _timeComboBox;
-
-        public ClientRecordingViewModel(string connectionString, IRepositoryFactory repositoryFactory, ComboBox ServiceComboBox, ComboBox EmployeeComboBox, ComboBox TimeComboBox)
+        public ClientRecordingViewModel(IRepositoryFactory repositoryFactory)
         {
-            _connectionString = connectionString;
-
             _repositoryFactory = repositoryFactory;
             _serviceRepository = _repositoryFactory.CreateServiceRepository();
-
-            _servicesComboBox = ServiceComboBox;
-            _employeesComboBox = EmployeeComboBox;
-            _timeComboBox = TimeComboBox;
 
             ServiceComboBoxSelectionChangedCommand = new DelegateCommand(Service_ComboBox_SelectionChanged);
             EmployeeComboBoxSelectionChangedCommand = new DelegateCommand(Employee_ComboBox_SelectionChanged);
@@ -176,15 +174,11 @@ namespace Nail_Salon_MVVM
 
         private void Service_ComboBox_SelectionChanged()
         {
-            var selectedService = _servicesComboBox.SelectedItem as Service;
-            SelectedService = selectedService;
         }
 
 
         private void Employee_ComboBox_SelectionChanged()
         {
-            var selectedEmployee = _employeesComboBox.SelectedItem as Employee;
-            SelectedEmployee = selectedEmployee;
         }
 
         private void Button_Record_Click()
@@ -194,6 +188,7 @@ namespace Nail_Salon_MVVM
             decimal phoneNumber = CustomerPhoneNumber;
             DateOnly appointmentDate = SelectedDate;
             TimeSpan appointmentTime = SelectedTime;
+            TimeSpan executionTime = ExecutionTime;
 
             Customer client = new Customer { CustomerFullName = fullName, CustomerBirthDate = birthDate, CustomerPhoneNumber = phoneNumber };
 
@@ -205,20 +200,26 @@ namespace Nail_Salon_MVVM
                 DateTime appointmentDateTime = new DateTime(appointmentDate.Year, appointmentDate.Month, appointmentDate.Day,
                                             appointmentTime.Hours, appointmentTime.Minutes, appointmentTime.Seconds);
 
+                TimeSpan endTime = appointmentDateTime.TimeOfDay + executionTime;
+
                 ICustomerRepository clientRecord = _repositoryFactory.CreateCustomerRepository(client, selectedService, selectedEmployee, appointmentDateTime, selectedService.ServiceExecutionTime);
-                using (WritingDbContext context = new WritingDbContext(_connectionString))
+
+                bool isCustomerCreated = clientRecord.AddOrUpdateCustomer(client);
+                bool isEmployeeAvailable = clientRecord.IsEmployeeAvailable(selectedEmployee.Id, appointmentDateTime);
+
+                try
                 {
-                    clientRecord.RecordCustomerAsync();
-                    if (!clientRecord.IsRecordingSuccessful)
+                    if (client.IsRecordingSuccessful(isCustomerCreated, isEmployeeAvailable))
                     {
-                        string notificationText = $"{selectedEmployee.EmployeeFullName} занят в это время";
-                        ShowNotification(notificationText);
-                    }
-                    else
-                    {
+                        clientRecord.RecordCustomerAsync(client, selectedService, selectedEmployee, appointmentDateTime, endTime);
+
                         string notificationText = $"{fullName} записан(а) {appointmentDate} {SelectedTime} на {selectedService.ServiceName} к {selectedEmployee.EmployeeFullName}";
                         ShowNotification(notificationText);
                     }
+                }
+                catch (Exception ex)
+                {
+                    ShowNotification(ex.Message);
                 }
             }
             else
@@ -236,13 +237,11 @@ namespace Nail_Salon_MVVM
 
         private void GenerateTimeSlots()
         {
-            // сделать вытягивание времени из бд
-
             const int startHour = 9;
             const int endHour = 20;
             const int intervalMinutes = 30;
 
-            _timeComboBox.Items.Clear();
+            TimeSlots = new ObservableCollection<string>();
 
             for (int hour = startHour; hour <= endHour; hour++)
             {
@@ -250,10 +249,7 @@ namespace Nail_Salon_MVVM
                 {
                     string time = $"{hour:D2}:{minute:D2}";
 
-                    ComboBoxItem item = new ComboBoxItem();
-                    item.Content = time;
-
-                    _timeComboBox.Items.Add(item);
+                    TimeSlots.Add(time);
                 }
             }
         }

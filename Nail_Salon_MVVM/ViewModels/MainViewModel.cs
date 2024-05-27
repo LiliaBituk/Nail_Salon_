@@ -46,7 +46,7 @@ namespace Nail_Salon_MVVM
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    ClientRecordingWindow selectServiceWindow = new ClientRecordingWindow(_connectionString, _repositoryFactory);
+                    ClientRecordingWindow selectServiceWindow = new ClientRecordingWindow(_repositoryFactory);
                     selectServiceWindow.ShowDialog();
                 });
             });

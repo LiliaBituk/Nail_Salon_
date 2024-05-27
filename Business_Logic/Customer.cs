@@ -23,5 +23,20 @@ namespace Business_Logic
 
         [InverseProperty("Customer")]
         public ICollection<CustomerRecords> CustomerRecords { get; set; }
+
+        public bool IsRecordingSuccessful(bool isCustomerCreated, bool isEmployeeAvailable)
+        {
+            if (!isCustomerCreated)
+            {
+                throw new InvalidOperationException("Ошибка в записи клиента");
+            }
+
+            if (!isEmployeeAvailable)
+            {
+                throw new InvalidOperationException("Мастер занят в выбранное время");
+            }
+
+            return true;
+        }
     }
 }
