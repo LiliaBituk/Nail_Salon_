@@ -21,7 +21,7 @@ namespace DataAccess
             {
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
-                    connection.OpenAsync();
+                    await connection.OpenAsync();
 
                     SqlCommand command = new SqlCommand("GetScheduleByDate", connection);
                     command.CommandType = CommandType.StoredProcedure;

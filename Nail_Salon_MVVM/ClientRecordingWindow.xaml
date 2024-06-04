@@ -54,7 +54,7 @@
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="BorderBrush" Value="#FFCC489B"/>
         </Style>
-
+       
     </Window.Resources>
 
     <Grid>
@@ -105,12 +105,11 @@
 
 
         <ComboBox Name="TimeComboBox"  
-                  ItemsSource="{Binding TimeSlots}"
-                  Grid.Row="10" 
-                  SelectedValue="{Binding SelectedTime, Mode=TwoWay}" 
-                  SelectedValuePath="Content"
-                  Margin="10,10,10,10"
-                  HorizontalContentAlignment="Left"/>
+          ItemsSource="{Binding TimeSlots}"
+          Grid.Row="10" 
+          SelectedValue="{Binding SelectedTime, Mode=TwoWay}"
+          Margin="10,10,10,10"
+          HorizontalContentAlignment="Left"/>
 
         <Button Grid.Row="11" Content="Записать" Command="{Binding ButtonCustomerWritingCommand}" Margin="5,10,5,5"/>
 

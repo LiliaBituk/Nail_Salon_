@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 
@@ -14,13 +13,16 @@ namespace Nail_Salon_MVVM
 {
     public class ClientRecordingViewModel : INotifyPropertyChanged
     {
-        public ObservableCollection<Service> AvailableServices { get; set; }
-        public ObservableCollection<Employee> AvailableEmployees { get; set; }
-
         private Service _selectedService;
         public Service SelectedService
         {
-            get { return _selectedService; }
+            get {
+                if (_selectedService != null)
+                {
+                    LoadEmployeesByServiceType(_selectedService.ServiceType);
+                }
+                
+                return _selectedService; }
             set
             {
                 _selectedService = value;
@@ -121,6 +123,9 @@ namespace Nail_Salon_MVVM
             }
         }
 
+        public ObservableCollection<Service> AvailableServices { get; set; }
+        public ObservableCollection<Employee> AvailableEmployees { get; set; }
+
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly IServiceRepository _serviceRepository;
 
@@ -188,12 +193,12 @@ namespace Nail_Salon_MVVM
             decimal phoneNumber = CustomerPhoneNumber;
             DateOnly appointmentDate = SelectedDate;
             TimeSpan appointmentTime = SelectedTime;
-            TimeSpan executionTime = ExecutionTime;
 
             Customer client = new Customer { CustomerFullName = fullName, CustomerBirthDate = birthDate, CustomerPhoneNumber = phoneNumber };
 
             Service selectedService = SelectedService;
             Employee selectedEmployee = SelectedEmployee;
+            TimeSpan executionTime = selectedService.ServiceExecutionTime;
 
             if (client != null && selectedService != null && selectedEmployee != null)
             {

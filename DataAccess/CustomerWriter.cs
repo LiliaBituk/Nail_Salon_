@@ -1,6 +1,7 @@
 ﻿using Business_Logic;
-using System.Data.Entity;
-using System.Data.Entity.Core;
+using System.Data;
+using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace DataAccess
 {
@@ -17,52 +18,73 @@ namespace DataAccess
         {
             try
             {
-                using (WritingDbContext context = new WritingDbContext(_connectionsString))
+                using (SqlConnection connection = new SqlConnection(_connectionsString))
                 {
-                    CustomerRecords clientAndService = new CustomerRecords { CustomerId = customer.Id, ServiceId = service.Id, ServiceDateTime = appointmentDateTime, ServiceEndTime = endTime };
-                    context.Client_Service.Add(clientAndService);
+                    await connection.OpenAsync();
 
-                    EmployeeRecords employeeAndService = new EmployeeRecords { EmployeeId = employee.Id, ServiceId = service.Id, ServiceDateTime = appointmentDateTime, ServiceEndTime = endTime };
-                    context.Employee_Service.Add(employeeAndService);
+                    using (SqlCommand command = new SqlCommand("RecordCustomer", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
 
-                    context.Client_Service.Add(clientAndService);
-                    context.Employee_Service.Add(employeeAndService);
+                        command.Parameters.AddWithValue("@CustomerId", customer.Id);
+                        command.Parameters.AddWithValue("@ServiceId", service.Id);
+                        command.Parameters.AddWithValue("@EmployeeId", employee.Id);
+                        command.Parameters.AddWithValue("@AppointmentDateTime", appointmentDateTime);
+                        command.Parameters.AddWithValue("@ServiceEndTime", endTime);
 
-                    await context.SaveChangesAsync();
+                        await command.ExecuteNonQueryAsync();
+                    }
                 }
             }
-            catch (EntityCommandExecutionException ex)
+            catch (SqlException ex)
             {
                 Console.WriteLine(ex.Message);
+                throw;
             }
         }
+
 
         public bool AddOrUpdateCustomer(Customer customer)
         {
             try
             {
-                using (WritingDbContext context = new WritingDbContext(_connectionsString))
+                using (SqlConnection connection = new SqlConnection(_connectionsString))
                 {
-                    var existingCustomer = context.Customers
-                        .FirstOrDefault(c => c.CustomerFullName == customer.CustomerFullName && c.CustomerBirthDate == customer.CustomerBirthDate);
+                    connection.Open();
 
-                    if (existingCustomer == null)
+                    using (SqlCommand command = new SqlCommand("AddOrUpdateCustomer", connection))
                     {
-                        customer.CustomerIsNew = true;
-                        context.Customers.Add(customer);
-                    }
-                    else
-                    {
-                        existingCustomer.CustomerIsNew = false;
-                        customer.Id = existingCustomer.Id;
-                        context.Entry(existingCustomer).State = EntityState.Modified;
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.AddWithValue("@CustomerFullName", customer.CustomerFullName);
+                        command.Parameters.AddWithValue("@CustomerBirthDate", customer.CustomerBirthDate);
+                        command.Parameters.AddWithValue("@CustomerPhoneNumber", customer.CustomerPhoneNumber);
+
+                        var customerIsNewParam = new SqlParameter("@CustomerIsNew", SqlDbType.Bit)
+                        {
+                            Direction = ParameterDirection.Output
+                        };
+                        command.Parameters.Add(customerIsNewParam);
+
+                        var customerIdParam = new SqlParameter("@CustomerId", SqlDbType.Int)
+                        {
+                            Direction = ParameterDirection.Output
+                        };
+                        command.Parameters.Add(customerIdParam);
+
+                        command.ExecuteNonQuery();
+
+                        customer.CustomerIsNew = (bool)customerIsNewParam.Value;
+                        if (!customer.CustomerIsNew)
+                        {
+                            customer.Id = (int)customerIdParam.Value;
+                        }
                     }
 
-                    context.SaveChanges();
                     return true;
                 }
             }
-            catch (EntityCommandExecutionException ex)
+            catch (SqlException ex)
             {
                 Console.WriteLine(ex.Message);
                 return false;
@@ -71,14 +93,35 @@ namespace DataAccess
 
         public bool IsEmployeeAvailable(int employeeId, DateTime appointmentDateTime)
         {
-            using (WritingDbContext context = new WritingDbContext(_connectionsString))
+            try
             {
-                var employeeRecords = context.Employee_Service
-                                   .Where(es => es.EmployeeId == employeeId && DbFunctions.TruncateTime(es.ServiceDateTime) == appointmentDateTime.Date)
-                                   .ToList();
-               
-                bool isEmployeeAvailable = !employeeRecords.Any(es => es.ServiceDateTime <= appointmentDateTime && es.ServiceEndTime >= appointmentDateTime.TimeOfDay);
-                return isEmployeeAvailable;
+                using (SqlConnection connection = new SqlConnection(_connectionsString))
+                {
+                    connection.Open();
+
+                    using (SqlCommand command = new SqlCommand("IsEmployeeAvailable", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.AddWithValue("@EmployeeId", employeeId);
+                        command.Parameters.AddWithValue("@AppointmentDateTime", appointmentDateTime);
+
+                        var isAvailableParam = new SqlParameter("@IsAvailable", SqlDbType.Bit)
+                        {
+                            Direction = ParameterDirection.Output
+                        };
+                        command.Parameters.Add(isAvailableParam);
+
+                        command.ExecuteNonQuery();
+
+                        return (bool)isAvailableParam.Value;
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
             }
         }
     }

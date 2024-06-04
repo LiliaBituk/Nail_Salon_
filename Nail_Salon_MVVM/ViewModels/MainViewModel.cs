@@ -6,13 +6,11 @@ using System.Windows;
 using Prism.Commands;
 using System.Windows.Controls;
 using DataAccess;
-using Microsoft.EntityFrameworkCore;
 
 namespace Nail_Salon_MVVM
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        private readonly string _connectionString;
         private readonly DatePicker _datePicker;
 
         public ICommand _recordClientCommand { get; private set; }
@@ -21,19 +19,18 @@ namespace Nail_Salon_MVVM
 
         public IRepositoryFactory _repositoryFactory;
 
+        public ScheduleItemViewModel ScheduleViewModel { get; }
+        public EmployeesViewModel EmployeesViewModel { get; }
+
         public MainViewModel(string connectionString, DatePicker ScheduleDatePicker)
         {
             _datePicker = ScheduleDatePicker;
-            _connectionString = connectionString;
 
             _recordClientCommand = new DelegateCommand(OpenClientRecordingWindowAsync);
             _updateScheduleCommand = new DelegateCommand(UpdateScheduleCommand);
             _datePickerSelectedDateChangedCommand = new DelegateCommand(ScheduleDatePicker_SelectedDateChanged);
 
-            var optionsBuilder = new DbContextOptionsBuilder<ReadingDbContext>();
-            optionsBuilder.UseSqlServer(connectionString);
-
-            _repositoryFactory = new RepositoryFactory(optionsBuilder.Options, connectionString);
+            _repositoryFactory = new RepositoryFactory(connectionString);
 
             ScheduleViewModel = new ScheduleItemViewModel(_repositoryFactory);
             EmployeesViewModel = new EmployeesViewModel(_repositoryFactory);
@@ -86,10 +83,6 @@ namespace Nail_Salon_MVVM
                 }
             });
         }
-
-
-        public ScheduleItemViewModel ScheduleViewModel { get; }
-        public EmployeesViewModel EmployeesViewModel { get; }
 
         private DateTime _selectedDate;
         public DateTime SelectedDate
