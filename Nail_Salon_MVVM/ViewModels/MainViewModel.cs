@@ -15,6 +15,7 @@ namespace Nail_Salon_MVVM
 
         public ICommand _recordClientCommand { get; private set; }
         public ICommand _updateScheduleCommand { get; private set; }
+        public ICommand _deleteAppointmentCommand { get; private set; }
         public ICommand _datePickerSelectedDateChangedCommand { get; }
 
         public IRepositoryFactory _repositoryFactory;
@@ -28,6 +29,7 @@ namespace Nail_Salon_MVVM
 
             _recordClientCommand = new DelegateCommand(OpenClientRecordingWindowAsync);
             _updateScheduleCommand = new DelegateCommand(UpdateScheduleCommand);
+            _deleteAppointmentCommand = new DelegateCommand(DeleteAppointmentCommand);
             _datePickerSelectedDateChangedCommand = new DelegateCommand(ScheduleDatePicker_SelectedDateChanged);
 
             _repositoryFactory = new RepositoryFactory(connectionString);
@@ -47,6 +49,35 @@ namespace Nail_Salon_MVVM
                     selectServiceWindow.ShowDialog();
                 });
             });
+        }
+
+        private async void DeleteAppointmentCommand()
+        {
+            if (ScheduleViewModel.SelectedScheduleItem != null)
+            {
+                int appointmentId = ScheduleViewModel.SelectedScheduleItem.Id; 
+                bool isDeleted = await _repositoryFactory.CreateScheduleRepository().DeleteAppointment(appointmentId);
+
+                if (isDeleted)
+                {
+                    UpdateScheduleData();
+                    ShowNotification("Запись удалена");
+                }
+                else
+                {
+                    ShowNotification("Не удалось удалить запись");
+                }
+            }
+            else
+            {
+                ShowNotification("Пожалуйста, выберите запись для удаления");
+            }
+        }
+
+        private void ShowNotification(string text)
+        {
+            NotificationWindow notificationWindow = new NotificationWindow(text);
+            notificationWindow.ShowDialog();
         }
 
         private void UpdateScheduleCommand()

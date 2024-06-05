@@ -15,14 +15,13 @@ namespace Nail_Salon_MVVM
         {
             _repositoryFactory = repositoryFactory;
 
-            ScheduleItems = new ObservableCollection<Schedule>();
+            ScheduleItems = new ObservableCollection<VisitLogs>();
             SelectedDate = DateTime.Now;
             LoadScheduleItems(SelectedDate);
         }
 
-        private ObservableCollection<Schedule> _scheduleItems;
-
-        public ObservableCollection<Schedule> ScheduleItems
+        private ObservableCollection<VisitLogs> _scheduleItems;
+        public ObservableCollection<VisitLogs> ScheduleItems
         {
             get { return _scheduleItems; }
             set
@@ -36,7 +35,6 @@ namespace Nail_Salon_MVVM
         }
 
         private DateTime _selectedDate;
-
         public DateTime SelectedDate
         {
             get { return _selectedDate; }
@@ -50,16 +48,30 @@ namespace Nail_Salon_MVVM
             }
         }
 
+        private VisitLogs _selectedScheduleItem;
+        public VisitLogs SelectedScheduleItem
+        {
+            get { return _selectedScheduleItem; }
+            set
+            {
+                if (_selectedScheduleItem != value)
+                {
+                    _selectedScheduleItem = value;
+                    OnPropertyChanged(nameof(SelectedScheduleItem));
+                }
+            }
+        }
+
         public async void LoadScheduleItems(DateTime selectedDate)
         {
             try
             {
                 IScheduleRepository reader =  _repositoryFactory.CreateScheduleRepository();
-                List<Schedule> listScheduleitems = await reader.GetSchedule(selectedDate);
+                List<VisitLogs> listScheduleitems = await reader.GetSchedule(selectedDate);
 
                 ScheduleItems.Clear();
 
-                foreach (Schedule item in listScheduleitems)
+                foreach (VisitLogs item in listScheduleitems)
                 {
                     ScheduleItems.Add(item);
                 }

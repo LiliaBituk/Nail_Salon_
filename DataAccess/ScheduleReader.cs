@@ -13,9 +13,9 @@ namespace DataAccess
             _connectionString = connectionString;
         }
 
-        public async Task<List<Schedule>> GetSchedule(DateTime selectedDate)
+        public async Task<List<VisitLogs>> GetSchedule(DateTime selectedDate)
         {
-            List<Schedule> schedule = new List<Schedule>();
+            List<VisitLogs> schedule = new List<VisitLogs>();
 
             try
             {
@@ -35,7 +35,7 @@ namespace DataAccess
                             Customer customer = new Customer
                             {
                                 Id = Convert.ToInt32(reader["CustomerId"]),
-                                CustomerFullName = reader["ClientName"].ToString()
+                                CustomerFullName = reader["CustomerName"].ToString()
                             };
 
                             Service service = new Service
@@ -51,12 +51,14 @@ namespace DataAccess
                                 EmployeeFullName = reader["EmployeeName"].ToString()
                             };
 
-                            Schedule item = new Schedule
+                            VisitLogs item = new VisitLogs
                             {
+                                Id = (int)reader["Id"],
                                 Customer = customer,
                                 Service = service,
                                 Employee = employee,
                                 StartDateTime = Convert.ToDateTime(reader["StartDateTime"]),
+                                EndTime = (TimeSpan)reader["EndTime"],
                                 Price = service.ServicePrice
                             };
 
@@ -75,5 +77,31 @@ namespace DataAccess
 
             return schedule;
         }
+
+        public async Task<bool> DeleteAppointment(int appointmentId)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    SqlCommand command = new SqlCommand("DeleteAppointment", connection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    command.Parameters.AddWithValue("@AppointmentId", appointmentId);
+
+                    int rowsAffected = await command.ExecuteNonQueryAsync();
+                    return rowsAffected > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
+        }
+
     }
 }

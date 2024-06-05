@@ -1,22 +1,19 @@
-﻿
-namespace Business_Logic
+﻿namespace Business_Logic
 {
-    public class VisitLogs
+    public class VisitLogs 
     {
         public int Id { get; set; }
 
-        public int CustomerId { get; set; }
+        public Customer Customer { get; set; }
 
-        //public Service Service { get; set; }
+        public Service Service { get; set; }
 
-        public int ServiceId { get; set; }
+        public Employee Employee { get; set; }
 
-        public int EmployeeId { get; set; }
+        public DateTime StartDateTime { get; set; }
 
-       // public virtual Employee Employee { get; set; }
+        public TimeSpan EndTime { get; set; }
 
-        public DateTime ServiceDateTime { get; set; }
-
-        public TimeSpan ServiceEndTime { get; set; }
+        public decimal Price { get; set; }
     }
 }
